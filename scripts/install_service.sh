@@ -40,6 +40,7 @@ case "$(uname -s)" in
     PLIST="$HOME/Library/LaunchAgents/com.sticky.server.plist"
     LOG="$HOME/Library/Logs/sticky-server.log"
     launchctl bootout "gui/$(id -u)/com.sticky.server" 2>/dev/null || true
+    for _ in 1 2 3 4 5 6 7 8 9 10; do launchctl print "gui/$(id -u)/com.sticky.server" >/dev/null 2>&1 || break; sleep 0.5; done
     if [ "${1:-}" = "--uninstall" ]; then rm -f "$PLIST"; echo "removed $PLIST"; exit 0; fi
     sed -e "s|__UV__|$UV|g" -e "s|__REPO__|$REPO|g" -e "s|__PATH__|$SVC_PATH|g" -e "s|__LOG__|$LOG|g" \
       "$REPO/deploy/launchd/com.sticky.server.plist" > "$PLIST"
