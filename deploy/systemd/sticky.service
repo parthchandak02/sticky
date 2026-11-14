@@ -1,0 +1,14 @@
+[Unit]
+Description=Sticky e-paper server
+After=network-online.target
+
+[Service]
+WorkingDirectory=__REPO__
+Environment=PATH=__PATH__
+Environment=PYTHONUNBUFFERED=1
+ExecStart=__REPO__/.venv/bin/sticky-server
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=default.target
