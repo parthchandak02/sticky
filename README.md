@@ -125,6 +125,19 @@ All endpoints except `/healthz` and `/firmware/*` need the token as `X-Sticky-To
 </details>
 
 <details>
+<summary><b>Wireless firmware updates</b></summary>
+
+Build the device firmware ([sticky-firmware](https://github.com/parthchandak02/sticky-firmware), `pio run -e sticky_board`), then publish it:
+
+```bash
+uv run python scripts/publish_firmware.py ../sticky-firmware/.pio/build/sticky_board
+```
+
+The next time Board opens on the device it compares versions, offers the update, and installs it on a press of the top button.
+
+</details>
+
+<details>
 <summary><b>Moving it to another machine</b></summary>
 
 1. Clone the repo, copy `.env`, run `uv sync` and `scripts/install_service.sh`.

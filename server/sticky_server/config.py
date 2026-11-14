@@ -49,6 +49,7 @@ class Settings:
     claude_bin: str
     cleanup_model: str
     vocab: str
+    host_labels: dict
 
     @property
     def notes_dir(self) -> Path:
@@ -86,6 +87,9 @@ def load() -> Settings:
         claude_bin=_get("STICKY_CLAUDE_BIN", "claude"),
         cleanup_model=_get("STICKY_CLEANUP_MODEL", "haiku"),
         vocab=_get("STICKY_VOCAB", ""),
+        host_labels=dict(
+            kv.split("=", 1) for kv in _get("STICKY_HOST_LABELS", "").split(",") if "=" in kv
+        ),
     )
     for d in (s.data_dir, s.notes_dir, s.audio_dir, s.firmware_dir):
         d.mkdir(parents=True, exist_ok=True)

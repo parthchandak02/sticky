@@ -48,12 +48,23 @@ def auth(request: Request) -> None:
 
 
 # ---- dashboard ------------------------------------------------------------
+def _label(host: str) -> str:
+    return settings.host_labels.get(host, host)
+
+
+def _labelled_usage() -> dict:
+    u = usage.summary()
+    u["hosts"] = [_label(h) for h in u["hosts"]]
+    return u
+
+
 def render_page(name: str):
     idx = pages.PAGES.index(name)
     if name == "claude":
-        return pages.page_claude(usage.summary(), state.sessions(), state.limits(), settings.tz, idx)
+        sessions = [{**s, "host": _label(s.get("host", ""))} for s in state.sessions()]
+        return pages.page_claude(_labelled_usage(), sessions, state.limits(), settings.tz, idx)
     if name == "projects":
-        return pages.page_projects(usage.summary(), settings.tz, idx)
+        return pages.page_projects(_labelled_usage(), settings.tz, idx)
     return pages.page_notes(recent_notes(settings), settings.tz, idx)
 
 
