@@ -112,7 +112,7 @@ All endpoints except `/healthz` and `/firmware/*` need the token as `X-Sticky-To
 |---|---|---|
 | GET | `/` | HTML preview of every page |
 | GET | `/display/{page}.png` | Page image; `{page}` is `claude`, `projects`, `notes` or an index |
-| GET | `/display/{page}.bmp?rotate=90` | 8-bit grayscale BMP for the device |
+| GET | `/display/{page}.bmp?bits=2` | Grayscale BMP for the device: `bits=2` is native 4-level (96 KB), default 8; optional `rotate` |
 | POST | `/api/hooks/claude` | Claude Code hook event JSON |
 | POST | `/api/statusline` | Status line JSON with `rate_limits` |
 | POST | `/api/usage/push?host=NAME` | `ccusage` data from another machine |

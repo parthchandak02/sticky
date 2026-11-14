@@ -47,3 +47,16 @@ def test_pages_render_four_levels():
         assert img.size == (800, 480)
         assert set(img.getdata()) <= set(draw.LEVELS)
     assert draw.to_bmp(img)[:2] == b"BM"
+
+
+def test_two_bit_bmp_roundtrip():
+    from PIL import Image
+
+    img = Image.new("L", (10, 3), 255)
+    for x, lv in enumerate(draw.LEVELS):
+        img.putpixel((x, 0), lv)
+    data = draw.to_bmp(img, bits=2)
+    assert int.from_bytes(data[28:30], "little") == 2  # bits per pixel
+    assert len(data) == 14 + 40 + 16 + 4 * 3  # 10 px * 2 bits = 20 bits -> 4-byte rows
+    top_row = data[-4:]  # rows are bottom-up, so the last row is image row 0
+    assert top_row[0] == 0b00011011  # black, dark, light, white

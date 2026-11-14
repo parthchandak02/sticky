@@ -72,10 +72,12 @@ def display_png(name: str) -> Response:
 
 
 @app.get("/display/{name}.bmp", dependencies=[Depends(auth)])
-def display_bmp(name: str, rotate: int = 0) -> Response:
+def display_bmp(name: str, rotate: int = 0, bits: int = 8) -> Response:
     if rotate not in (0, 90, 180, 270):
         raise HTTPException(400, "rotate must be 0, 90, 180 or 270")
-    return Response(draw.to_bmp(render_page(_page_name(name)), rotate), media_type="image/bmp",
+    if bits not in (2, 8):
+        raise HTTPException(400, "bits must be 2 or 8")
+    return Response(draw.to_bmp(render_page(_page_name(name)), rotate, bits), media_type="image/bmp",
                     headers={"Cache-Control": "no-store"})
 
 
