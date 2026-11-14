@@ -116,7 +116,7 @@ All endpoints except `/healthz` and `/firmware/*` need the token as `X-Sticky-To
 | POST | `/api/hooks/claude` | Claude Code hook event JSON |
 | POST | `/api/statusline` | Status line JSON with `rate_limits` |
 | POST | `/api/usage/push?host=NAME` | `ccusage` data from another machine |
-| GET | `/api/sessions`, `/api/usage` | The data behind the pages |
+| GET | `/api/sessions`, `/api/usage`, `/api/devices` | The data behind the pages; devices and their firmware |
 | POST | `/api/voice` | Audio (raw body or multipart `file`); returns an id |
 | GET | `/api/voice/{id}` | Job status, transcript and note |
 | GET | `/api/notes` | Recent notes |
@@ -127,13 +127,13 @@ All endpoints except `/healthz` and `/firmware/*` need the token as `X-Sticky-To
 <details>
 <summary><b>Wireless firmware updates</b></summary>
 
-Build the device firmware ([sticky-firmware](https://github.com/parthchandak02/sticky-firmware), `pio run -e sticky_board`), then publish it:
+One command builds the device firmware ([sticky-firmware](https://github.com/parthchandak02/sticky-firmware)), publishes it, and waits until the device reports the new version:
 
 ```bash
-uv run python scripts/publish_firmware.py ../sticky-firmware/.pio/build/sticky_board
+scripts/ship_firmware.sh ../sticky-firmware
 ```
 
-The next time Board opens on the device it compares versions, offers the update, and installs it on a press of the top button.
+While Board is open, the device checks `/firmware/sticky.json` on every page refresh. When the version differs from its own, it downloads the image, validates it (ESP image checksum, SHA-256 trailer, board tag), installs it to the spare OTA slot, restarts and reopens Board. A version that failed once is not retried. `/api/devices` lists each device's last check-in and firmware version.
 
 </details>
 

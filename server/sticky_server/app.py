@@ -83,7 +83,9 @@ def display_png(name: str) -> Response:
 
 
 @app.get("/display/{name}.bmp", dependencies=[Depends(auth)])
-def display_bmp(name: str, rotate: int = 0, bits: int = 8) -> Response:
+def display_bmp(request: Request, name: str, rotate: int = 0, bits: int = 8) -> Response:
+    if request.client:
+        state.device_seen(request.client.host, request.headers.get("x-sticky-fw", ""), name)
     if rotate not in (0, 90, 180, 270):
         raise HTTPException(400, "rotate must be 0, 90, 180 or 270")
     if bits not in (2, 8):
@@ -139,6 +141,11 @@ async def usage_push(request: Request, host: str) -> dict[str, bool]:
 @app.get("/api/sessions", dependencies=[Depends(auth)])
 def api_sessions() -> list[dict[str, Any]]:
     return state.sessions()
+
+
+@app.get("/api/devices", dependencies=[Depends(auth)])
+def api_devices() -> list[dict[str, Any]]:
+    return state.devices()
 
 
 @app.get("/api/usage", dependencies=[Depends(auth)])

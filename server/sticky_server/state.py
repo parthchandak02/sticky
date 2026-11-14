@@ -29,7 +29,7 @@ class State:
     def __init__(self, path: Path):
         self.path = path
         self._lock = threading.Lock()
-        self.data: dict[str, Any] = {"sessions": {}, "limits": {}, "usage_pushes": {}}
+        self.data: dict[str, Any] = {"sessions": {}, "limits": {}, "usage_pushes": {}, "devices": {}}
         if path.is_file():
             try:
                 self.data.update(json.loads(path.read_text()))
@@ -130,3 +130,17 @@ class State:
     def usage_pushes(self) -> dict[str, Any]:
         with self._lock:
             return {h: v["payload"] for h, v in self.data["usage_pushes"].items()}
+
+    # ---- devices -------------------------------------------------------------
+    def device_seen(self, address: str, firmware: str, page: str, now: float | None = None) -> None:
+        with self._lock:
+            devices = self.data.setdefault("devices", {})
+            prev = devices.get(address, {})
+            devices[address] = {"address": address, "firmware": firmware or prev.get("firmware", ""),
+                                "page": page, "seen_at": now or time.time()}
+            if prev.get("firmware") != devices[address]["firmware"]:
+                self._save()  # persist version changes; plain check-ins stay in memory
+
+    def devices(self) -> list[dict[str, Any]]:
+        with self._lock:
+            return sorted(self.data.get("devices", {}).values(), key=lambda d: -d["seen_at"])
