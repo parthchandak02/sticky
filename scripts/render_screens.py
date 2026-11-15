@@ -46,7 +46,7 @@ def dither_photo(src: Path, dst: Path, size: tuple[int, int], gamma: float = 0.8
         im = im.crop((cx, cy, cx + cw, cy + ch))
     im = ImageOps.fit(im, size, method=Image.Resampling.LANCZOS, centering=center)
     im = ImageOps.autocontrast(im, cutoff=0.5)
-    im = im.point(lambda v: int(14 + 222 * ((v / 255) ** gamma)))
+    im = im.point(lambda v: int(16 + 200 * ((v / 255) ** gamma)))
     im = ImageEnhance.Contrast(im).enhance(contrast)
     im = im.filter(ImageFilter.GaussianBlur(0.5))
     q = im.convert("RGB").quantize(palette=palette_image(), dither=Image.Dither.FLOYDSTEINBERG)

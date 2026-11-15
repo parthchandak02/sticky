@@ -6,7 +6,7 @@
 .wx { position:absolute; right:var(--m); top:56px; display:flex; gap:16px; align-items:flex-start; }
 .wx .t { font-family:"News",serif; font-size:84px; font-weight:500; line-height:0.85; letter-spacing:-0.03em; }
 .wx .t sup { font-size:44px; vertical-align:top; position:relative; top:6px; margin-left:-4px; }
-.wx .info { font-size:15px; font-weight:600; color:var(--graphite); line-height:1.5; margin-top:2px; }
+.wx .info { font-size:16px; font-weight:600; color:var(--ink); line-height:1.5; margin-top:2px; }
 .wx .info b { color:var(--ink); font-size:18px; display:block; }
 
 .line { position:absolute; left:var(--m); right:var(--m); top:196px; height:104px; }
@@ -14,7 +14,7 @@
 .line .past { position:absolute; left:0; top:40px; height:44px; }
 .ev { position:absolute; top:40px; height:44px; border:2px solid var(--ink); background:var(--paper); }
 .lab { position:absolute; top:12px; font-size:15px; font-weight:700; white-space:nowrap; }
-.lab.done { color:var(--graphite); font-weight:600; }
+.lab.done { color:var(--ink); font-weight:600; }
 .ev.done { border-color:var(--pencil); background:var(--pencil); }
 
 .ev.next { background:var(--ink); color:var(--paper); }
@@ -50,7 +50,7 @@
     {% set state = 'done' if e.end <= t.now_h else ('next' if e == nxt else '') %}
     <div class="ev {{ state }}" style="left:{{ x(e.start) }}px;width:{{ ((e.end - e.start) / (h1 - h0) * 752)|round(1) }}px"></div><div class="lab {{ state }}" style="left:{{ x(e.start) }}px">{{ e.title.split(",")[0] if state != "done" else e.title.split(" ")[0].split(",")[0] }}</div>
   {% endfor %}
-  {% for hh in range(h0, h1 + 1) %}<div class="tick" style="left:{{ x(hh) }}px"></div>{% if hh % 3 == 1 %}<div class="hr" style="left:{{ x(hh) }}px">{{ hh }}</div>{% endif %}{% endfor %}
+  {% for hh in range(h0, h1 + 1) %}{% if hh > h0 %}<div class="tick" style="left:{{ x(hh) }}px"></div>{% if hh % 3 == 1 %}<div class="hr" style="left:{{ x(hh) }}px">{{ hh }}</div>{% endif %}{% endif %}{% endfor %}
   <div class="now" style="left:{{ x(t.now_h) }}px"></div>
 </div>
 

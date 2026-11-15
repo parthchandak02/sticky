@@ -10,9 +10,9 @@
 .body p.first::first-letter { float:left; font-size:84px; line-height:72px; font-weight:600; padding:6px 4px 0 0; margin-bottom:-4px; }
 .body .chapter { font-family:"News",serif; font-size:40px; font-weight:600; letter-spacing:-0.01em; margin-bottom:30px; text-indent:0; line-height:60px; height:60px; }
 .foot { position:absolute; left:48px; right:48px; bottom:24px; }
-.foot .bar { height:4px; border-radius:2px; background:var(--pencil); position:relative; }
-.foot .bar i { position:absolute; left:0; top:-1px; bottom:-1px; background:var(--ink); }
-.foot .meta { display:flex; justify-content:space-between; font-family:"News",serif; font-size:17px; color:var(--graphite); margin-top:8px; }
+.foot .bar { height:1.5px; background:var(--ink); position:relative; }
+.foot .bar i { position:absolute; top:-4px; width:3px; height:9px; background:var(--ink); margin-left:-1px; }
+.foot .meta { display:flex; justify-content:space-between; font-family:"News",serif; font-size:17px; color:var(--graphite); margin-top:8px; color:var(--ink); }
 .foot .meta i { font-style:italic; }
 .zone { position:absolute; top:46px; bottom:60px; }
 {% endblock %}
@@ -31,7 +31,7 @@
 {% endif %}
 </div>
 <div class="foot">
-  <div class="bar"><i style="width:{{ (page + 11) / 318 * 100 }}%"></i></div>
+  <div class="bar"><i style="left:{{ (page + 11) / 318 * 100 }}%"></i></div>
   <div class="meta"><span>{{ page + 11 }} of 318</span><i>{{ 9 - page }} min left in chapter</i></div>
 </div>
 <div class="zone" style="left:0;width:33%" data-tap="page:prev"></div>

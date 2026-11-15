@@ -1,18 +1,19 @@
 {% extends "_layout.html.j2" %}
 {% block style %}
 /* Listening: the level history is the feedback; the device redraws it with a partial refresh about once a second. */
-.go { position:absolute; left:var(--m); top:66px; font-family:"News",serif; font-size:56px; font-weight:500; line-height:1; letter-spacing:-0.02em; }
+.go { position:absolute; left:var(--m); top:58px; font-family:"News",serif; font-size:76px; font-weight:500; line-height:1; letter-spacing:-0.02em; }
 .go em { font-style:italic; font-weight:400; }
-.levels { position:absolute; left:var(--m); right:var(--m); top:160px; height:120px; display:flex; align-items:center; gap:5px; border-top:2px solid var(--ink); border-bottom:2px solid var(--ink); }
+.levels { position:absolute; left:var(--m); right:var(--m); top:168px; height:150px; display:flex; align-items:center; gap:5px; border-top:2px solid var(--ink); border-bottom:2px solid var(--ink); }
 .levels i { flex:1; background:var(--ink); border-radius:1px; }
 .levels i.q { background:var(--pencil); }
-.modes { position:absolute; left:var(--m); right:var(--m); top:316px; display:grid; grid-template-columns:repeat(3,1fr); gap:var(--g); }
+.modes { position:absolute; left:var(--m); right:var(--m); bottom:24px; display:grid; grid-template-columns:repeat(3,1fr); gap:var(--g); }
 .modes div { font-size:16px; font-weight:600; color:var(--graphite); }
 .modes b { display:block; font-family:"News",serif; font-size:28px; color:var(--ink); font-weight:600; line-height:1.1; }
 .modes div { border-top:2px solid var(--ink); padding-top:8px; }
 .modes .on { border-top:8px solid var(--ink); padding-top:2px; }
-.modes div i { font-family:"News",serif; font-size:18px; color:var(--ink); }
-.secs { position:absolute; right:var(--m); top:62px; font-family:"News",serif; font-size:64px; font-weight:500; line-height:1; color:var(--graphite); }
+.modes div i { font-family:"News",serif; font-size:19px; color:var(--ink); }
+.secs { position:absolute; right:var(--m); top:64px; font-family:"News",serif; font-size:60px; font-weight:500; line-height:1; text-align:right; }
+.secs span { display:block; font-family:"Sans"; font-size:16px; font-weight:700; margin-top:4px; }
 
 /* Result */
 .kicker { position:absolute; left:var(--m); top:58px; font-family:"News",serif; font-style:italic; font-size:24px; }
@@ -21,19 +22,19 @@
 .facts .r { display:grid; grid-template-columns:96px 1fr; padding:10px 0 9px; border-top:1.5px solid var(--pencil); font-size:18px; font-weight:600; }
 .facts .r:first-child { border-top:2px solid var(--ink); }
 .facts .r span { color:var(--ink); font-weight:700; font-size:16px; }
-.heard { position:absolute; left:528px; right:var(--m); top:58px; bottom:22px; border-left:2px solid var(--ink); padding-left:18px; }
+.heard { position:absolute; left:528px; right:var(--m); top:58px; bottom:22px; display:flex; flex-direction:column; border-left:2px solid var(--ink); padding-left:18px; }
 .heard .h { font-family:"News",serif; font-style:italic; font-size:22px; }
-.heard p { font-family:"News",serif; font-style:italic; font-size:20px; line-height:1.3; margin-top:8px; color:var(--ink); }
-.acts { position:absolute; left:548px; right:var(--m); bottom:22px; display:flex; gap:10px; }
+.heard p { font-family:"News",serif; font-style:italic; font-size:21px; line-height:1.3; margin-top:8px; color:var(--ink); }
+.acts { position:absolute; left:548px; right:var(--m); top:250px; display:flex; gap:10px; }
 .acts .btn { flex:1; }
 .acts .btn { height:48px; }
 {% endblock %}
 {% block body %}
 {% set v = d.voice %}
 {% if mode == 'listening' %}
-<div class="go"><em>Listening.</em> Let go to send.</div>
-<div class="secs">0:07</div>
-<div class="levels">{% for h in [10,18,30,52,84,70,40,78,96,60,34,16,46,80,64,26,12,10,34,72,88,50,24,10,8,20,44,66] %}<i style="height:{{ h }}px"></i>{% endfor %}{% for i in range(16) %}<i class="q" style="height:0"></i>{% endfor %}</div>
+<div class="go"><em>Listening</em></div>
+<div class="secs">0:07<span>let go to send</span></div>
+<div class="levels">{% for h in [10,18,30,52,84,70,40,78,96,60,34,16,46,80,64,26,12,10,34,72,88,50,24,10,8,20,44,66,90,58,30,14,38,74,92,62,28,12,22,48,70,36] %}<i style="height:{{ h }}px"></i>{% endfor %}</div>
 <div class="modes">
   <div class="on"><b>Note</b><i>just talk</i></div>
   <div><b>Task</b><i>say &ldquo;task&rdquo; first</i></div>
@@ -46,7 +47,7 @@
   <div class="r"><span>Company</span>Avis</div>
   <div class="r"><span>Drivers</span>Both of us</div>
   <div class="r"><span>Pick up</span>12 Dec, at the airport</div>
-  <div class="r"><span>Due</span>Before 1 Dec, Hermes will remind you</div>
+  <div class="r"><span>Due</span>1 Dec</div>
 </div>
 <div class="heard"><div class="h">What I heard</div><p>&ldquo;{{ v.heard }}&rdquo;</p></div>
 <div class="acts">

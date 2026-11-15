@@ -67,3 +67,18 @@ Scores, eyeballed (2 critics, median, of 10): board 6.5, approve 6.8, today 7.4,
 Measured: proto_test 19/19. shoot 390 overflow none, taps under 44 0.
 Top gaps (both critics): pill buttons and spinners read as web UI; art thin gray lines; dead bands on approve/voice_result/countdown; light gray dashed elements fail in 1-bit fast refresh.
 Next: square buttons system-wide, still state marks, art in black, close dead bands.
+
+## Round 03
+
+Focus: square buttons system-wide, still state marks, black line art, tighter layouts.
+Scores, eyeballed (2 critics, median, of 10): board 7, approve 7, today 7.5, countdown 8, photo 6.5, onthisday 7, note 8, listening 6, voice_result 7.3, art 6, reader 7.6, proto 6.8.
+Measured: proto_test 19/19.
+Top gaps: gray small text (1-bit partial refresh), listening half-empty, dead bands, art concept called cliche (kept: it is Parth's own `trace` project), photo dither on a stand-in image.
+
+## Round 04
+
+Focus: listening full-width levels and big black timer; all small text black; Today axis, countdown serif weekdays, note signature in serif, task table and buttons, reader hairline progress, photo highlights capped.
+Scores: not judged yet (stopped to ask Parth for stills approval).
+Measured: proto_test 19/19.
+Open, for Parth: art concept (keep trace's Lorenz or switch to a data plate), real photos to tune dithering, black card ghosting needs full refresh on appear/disappear (firmware rule).
+Stop check: bar 9 not met (best screens ~8); cap reached by work done; stills approval pending.
