@@ -25,7 +25,8 @@
 namespace {
 constexpr const char* TAG = "main";
 constexpr uint32_t kAwakeOnBatteryMs = 60000;   // stay up a minute after the last touch on battery
-constexpr uint32_t kPollOnUsbMs = 5000;         // on USB power, check for changes this often
+constexpr uint32_t kPollOnUsbMs = 5000;         // on USB power, check for prompts this often
+constexpr uint32_t kRedrawEveryMs = 5UL * 60 * 1000;  // and redraw the page at most this often (the clock ticks)
 constexpr uint32_t kOtaEveryMs = 6UL * 3600 * 1000;
 constexpr int kRingRadius = 40;
 
@@ -51,7 +52,7 @@ struct Deck {
 
 bool serverOk = false;
 bool lastChime = false;
-uint32_t lastActivity = 0, lastPoll = 0, lastOta = 0;
+uint32_t lastActivity = 0, lastPoll = 0, lastOta = 0, lastDraw = 0;
 const Hotspot* holdTarget = nullptr;
 
 bool fetchDeck() {
@@ -115,6 +116,7 @@ bool show(const std::string& name, const char* refresh = "auto", bool force = fa
   strlcpy(rtcFrame, name.c_str(), sizeof(rtcFrame));
   strlcpy(rtcEtag, current.etag.c_str(), sizeof(rtcEtag));
   ota::markGood();  // drew a server frame: this build works
+  lastDraw = millis();
   return true;
 }
 
@@ -236,7 +238,7 @@ void checkOta(bool force) {
 }
 
 // Talk to the server: deck, then the right frame. Shows a status message when it can't.
-void sync(bool firstDraw) {
+void sync(bool firstDraw, bool redraw = true) {
   if (!net::connect()) {
     serverOk = false;
     if (firstDraw) display::message("Can't join Wi-Fi", settings.wifi.empty()
@@ -252,8 +254,10 @@ void sync(bool firstDraw) {
   const bool startChanged = deck.start == "approve" && current.name != "approve";
   if (deck.chime && !lastChime) hw::chime();  // a new Claude prompt is waiting
   lastChime = deck.chime;
+  if (!redraw && !startChanged) return;  // nothing urgent: keep the glass as it is
   const std::string target = startChanged ? "approve" : (current.name.empty() ? deck.start : current.name);
   if (!show(target, firstDraw ? "full" : "auto", firstDraw)) serverOk = false;
+  lastDraw = millis();
 }
 }  // namespace
 
@@ -334,7 +338,7 @@ void loop() {
   if (now - lastPoll > (hw::onExternalPower() ? kPollOnUsbMs : 30000) && !gestures.active()) {
     lastPoll = now;
     hw::readTelemetry();
-    sync(false);
+    sync(false, now - lastDraw > kRedrawEveryMs || !hw::onExternalPower());
     checkOta(false);
   }
   if (!hw::onExternalPower() && !gestures.active() && now - lastActivity > kAwakeOnBatteryMs) {
