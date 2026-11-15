@@ -9,8 +9,7 @@ canvas { position:absolute; inset:0; }
 {% endblock %}
 {% block body %}
 <canvas id="c" width="800" height="480"></canvas>
-<div class="credit"><b>Lorenz, today</b>From today's crypto prices</div>
-<div class="cap"><div class="a">Asleep</div><div class="b">Wakes at 6:30</div></div>
+<div class="cap"><div class="a">Asleep, wakes 6:30</div></div>
 <script>
 // Lorenz attractor, deterministic. Thin ink strokes build up into the panel's grays.
 const c = document.getElementById('c').getContext('2d');
@@ -24,7 +23,7 @@ for (const [x0, y0, z0, alpha] of runs) {
   for (let i = 0; i < 9000; i++) {
     const dx = s * (y - x), dy = x * (r - z) - y, dz = x * y - b * z;
     x += dx * dt; y += dy * dt; z += dz * dt;
-    const px = 400 + x * 12.2, py = 418 - z * 7.4;
+    const px = 400 + x * 12.6, py = 404 - z * 7.4;
     if (i < 200) { c.moveTo(px, py); continue; }
     c.lineTo(px, py);
     if (i % 400 === 0) { c.stroke(); c.beginPath(); c.moveTo(px, py); }
