@@ -16,7 +16,7 @@
    "title": "The Board",
    "deck_as": "board",
    "set": {
-    "toast": "Allowed, tandem is deploying"
+    "toast": "Allowed, trip-planner is deploying"
    },
    "patch_sessions": {
     "s1": {
@@ -31,7 +31,7 @@
    "title": "The Board",
    "deck_as": "board",
    "set": {
-    "toast": "Denied, tandem was told no"
+    "toast": "Denied, trip-planner was told no"
    },
    "patch_sessions": {
     "s1": {

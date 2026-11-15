@@ -38,31 +38,31 @@
  "sessions": [
   {
    "id": "s1",
-   "project": "tandem",
+   "project": "trip-planner",
    "host": "mini",
    "ago": "2m",
    "state": "waiting",
    "tool": "Bash",
    "command": "npm run deploy -- --prod",
    "doing": "Waiting for permission",
-   "where": "~/apps/tandem",
+   "where": "~/apps/trip-planner",
    "age": "4h 10m"
   },
   {
    "id": "s2",
-   "project": "jobwright",
+   "project": "job-board",
    "host": "vps",
    "ago": "now",
    "state": "working",
-   "doing": "Editing src/picks/score.ts"
+   "doing": "Editing src/search/rank.ts"
   },
   {
    "id": "s3",
-   "project": "hermes-agent",
+   "project": "home-agent",
    "host": "vps",
    "ago": "1m",
    "state": "working",
-   "doing": "Running pytest tests/whatsapp"
+   "doing": "Running pytest tests/chat"
   },
   {
    "id": "s4",
@@ -74,7 +74,7 @@
   },
   {
    "id": "s5",
-   "project": "portfolio",
+   "project": "website",
    "host": "mini",
    "ago": "18m",
    "state": "done",
@@ -139,7 +139,7 @@
    {
     "start": 17,
     "end": 18,
-    "title": "Tandem review",
+    "title": "Design review",
     "time": "17:00"
    },
    {
@@ -168,26 +168,26 @@
    {
     "when": "Tue",
     "aside": "all day",
-    "what": "Jobwright launch",
+    "what": "Launch day",
     "sub": "3 tasks left"
    }
   ]
  },
  "countdown": {
   "days": 47,
-  "what": "days to the wedding",
+  "what": "days to Lisbon",
   "month": "January 2027",
   "first_weekday": 4,
   "month_days": 31,
   "day": 1,
   "next": [
    {
-    "name": "New Zealand",
+    "name": "Passport renewal",
     "days": 12,
     "span": 30
    },
    {
-    "name": "Mehndi outfit due",
+    "name": "Book the flights",
     "days": 5,
     "span": 30
    }
@@ -195,22 +195,22 @@
  },
  "note": {
   "text": "Dumplings tonight? I'll pick up the good chilli oil.",
-  "from": "P.",
+  "from": "A.",
   "when": "9:12"
  },
  "voice": {
   "seconds": "0:04",
-  "kind": "Task for Hermes",
-  "title": "Book the Queenstown rental car",
+  "kind": "Task for the agent",
+  "title": "Book the Lisbon rental car",
   "lines": [
    "Avis, both of us as drivers",
    "Pick up 12 Dec at the airport"
   ],
-  "heard": "remind hermes to book the queenstown car, avis, both drivers, pick up twelfth at the airport",
+  "heard": "remind the agent to book the lisbon car, two drivers, pick up on the twelfth at the airport",
   "facts": [
    [
     "Company",
-    "Avis"
+    "Any"
    ],
    [
     "Drivers",
@@ -229,7 +229,7 @@
  "photo": {
   "full": "../img/photo_full.png",
   "caption": "Ubud, in the rain",
-  "byline": "from P, 2h ago"
+  "byline": "from A, 2h ago"
  },
  "memory": {
   "half": "../img/photo_half.png",
