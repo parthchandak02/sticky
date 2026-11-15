@@ -3,18 +3,18 @@
 .left { position:absolute; left:var(--m); top:54px; width:268px; bottom:16px; display:flex; flex-direction:column; }
 .spend-label { font-size:15px; font-weight:700; }
 .spend { font-family:"News",serif; font-weight:500; font-size:92px; line-height:0.9; letter-spacing:-0.035em; margin-top:2px; }
-.spend sup { font-size:44px; vertical-align:top; position:relative; top:10px; margin-right:2px; letter-spacing:0; }
+.spend sup { font-size:44px; vertical-align:top; position:relative; top:22px; margin-right:2px; letter-spacing:0; }
 .spend small { font-size:52px; }
 .periods { display:flex; gap:22px; margin-top:6px; font-size:15px; font-weight:600; }
 .periods b { color:var(--ink); font-family:"News",serif; font-size:21px; font-weight:600; margin-left:4px; }
 
-.meter { margin-top:12px; }
+.meter { margin-top:14px; }
 .meter .top { display:flex; align-items:baseline; justify-content:space-between; }
 .meter .name { font-size:16px; font-weight:700; }
 .meter .name span { font-weight:600; color:var(--graphite); margin-left:6px; font-size:15px; }
 .meter .pct { font-family:"News",serif; font-size:30px; font-weight:500; line-height:1; letter-spacing:-0.02em; }
 .meter .pct i { font-size:17px; font-style:normal; margin-left:1px; }
-.track { position:relative; height:14px; margin-top:6px; border:2px solid var(--ink); }
+.track { position:relative; height:12px; margin-top:7px; }
 .track .fill { position:absolute; left:0; top:0; bottom:0; background:var(--ink); }
 .track .rest { position:absolute; top:0; bottom:0; right:0; background:var(--pencil); }
 .ticks { display:flex; justify-content:space-between; height:5px; margin-top:3px; }
@@ -22,7 +22,7 @@
 .ticks i:nth-child(odd) { height:5px; } .ticks i:nth-child(even) { height:3px; background:var(--graphite); }
 
 
-.chart { margin-top:auto; }
+.chart { margin-top:auto; border-top:2px solid var(--ink); padding-top:26px; }
 .chart .bars { display:flex; align-items:flex-end; gap:5px; height:58px; margin-top:0; border-bottom:2px solid var(--ink); }
 .chart .bars i { flex:1; background:var(--graphite); display:block; }
 .chart .bars i.today { background:var(--ink); }
@@ -30,7 +30,7 @@
 .chart .axis b { font-weight:700; }
 .chart { position:relative; }
 .chart .peak { position:absolute; left:0; right:0; border-top:1.5px dashed var(--graphite); }
-.chart .peak span { position:absolute; right:0; top:-19px; font-size:14px; font-weight:700; background:var(--paper); padding-left:6px; }
+.chart .peak span { position:absolute; right:0; top:-21px; font-size:14px; font-weight:700; background:var(--paper); padding-left:6px; }
 
 .split { position:absolute; left:316px; top:58px; bottom:16px; width:2px; background:var(--ink); }
 
@@ -39,10 +39,10 @@
 .headline em { font-style:italic; }
 
 
-.ask { margin-top:8px; background:var(--ink); color:var(--paper); border-radius:6px; padding:14px 16px 14px; position:relative; }
+.ask { margin-top:8px; background:var(--ink); color:var(--paper); border-radius:3px; padding:14px 16px 14px; position:relative; }
 .ask .who { display:flex; align-items:baseline; justify-content:space-between; }
 .ask .proj { font-family:"News",serif; font-size:30px; font-weight:600; line-height:1; letter-spacing:-0.01em; }
-.ask .host { font-size:14px; font-weight:700; border:1.5px solid var(--paper); border-radius:11px; padding:2px 9px; }
+.ask .host { font-size:15px; font-weight:600; }
 .ask .cmd { margin-top:10px; font-family:"Code"; font-size:15px; line-height:1.35; padding:8px 10px; background:var(--paper); color:var(--ink); border-radius:3px; }
 .ask .cmd .tool { font-family:"Sans"; font-weight:700; font-size:14px; color:var(--graphite); display:block; margin-bottom:2px; }
 .ask .acts { display:flex; gap:10px; margin-top:12px; }
@@ -54,8 +54,9 @@
 .toast { left:556px; }
 .row { display:grid; grid-template-columns:26px 1fr auto; column-gap:10px; align-items:center; padding:9px 0 8px; border-bottom:1px solid var(--pencil); }
 .row:last-child { border-bottom:none; }
-.glyph { width:16px; height:16px; border-radius:50%; justify-self:center; }
-.glyph.working { border:3px solid var(--pencil); border-top-color:var(--ink); border-right-color:var(--ink); width:20px; height:20px; }
+.glyph { width:14px; height:14px; justify-self:center; }
+.glyph.working { background:var(--ink); }
+.glyph.idle { border:2.5px solid var(--ink); }
 .glyph.idle { border:2px solid var(--ink); }
 .glyph.done { border-radius:0; background:none; }
 .row .name { font-family:"News",serif; font-size:22px; font-weight:600; line-height:1.05; }
@@ -74,12 +75,11 @@
   <div class="meter">
     <div class="top"><div class="name">{{ m.name }}<span>resets {{ m.reset }}</span></div><div class="pct">{{ m.pct }}<i>%</i></div></div>
     <div class="track"><div class="fill" style="width:{{ m.pct }}%"></div><div class="rest" style="width:{{ 100 - m.pct }}%"></div></div>
-    <div class="ticks">{% for i in range(11) %}<i></i>{% endfor %}</div>
   </div>
   {% endfor %}
 
   <div class="chart">
-    <div class="peak" style="top:0"><span>${{ u.days|max }}</span></div>
+    <div class="peak" style="top:26px"><span>${{ "%.2f"|format(u.days|max) }}</span></div>
     <div class="bars">{% for v in u.days %}<i class="{{ 'today' if loop.last }}" style="height:{{ (v / (u.days|max) * 100)|round|int }}%"></i>{% endfor %}</div>
     <div class="axis"><span>Last 14 days</span><b>Today</b></div>
   </div>
@@ -101,7 +101,6 @@
     <div class="acts">
       <div class="btn ghost" data-tap="deny:{{ s.id }}">Deny</div>
       <div class="btn fill hold" data-hold="allow:{{ s.id }}">
-        <svg width="22" height="22" viewBox="0 0 22 22"><circle cx="11" cy="11" r="8.5" fill="none" stroke="#aaa" stroke-width="3.5"/><path d="M11 2.5a8.5 8.5 0 0 1 8.5 8.5" fill="none" stroke="#000" stroke-width="3.5"/></svg>
         Hold to allow
       </div>
     </div>

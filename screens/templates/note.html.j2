@@ -1,17 +1,17 @@
 {% extends "_layout.html.j2" %}
 {% block style %}
-.q { position:absolute; left:28px; top:70px; font-family:"News",serif; font-size:96px; line-height:1; font-weight:600; }
-.text { position:absolute; left:84px; right:48px; top:76px; font-family:"News",serif; font-style:italic; font-size:74px; line-height:1.04; font-weight:400; letter-spacing:-0.012em; }
+.q { position:absolute; left:34px; top:90px; font-family:"News",serif; font-size:96px; line-height:1; font-weight:600; }
+.text { position:absolute; left:80px; right:48px; top:96px; font-family:"News",serif; font-style:italic; font-size:74px; line-height:1.04; font-weight:400; letter-spacing:-0.012em; }
 .foot { position:absolute; left:var(--m); right:var(--m); bottom:22px; height:56px; display:flex; align-items:center; gap:14px; border-top:2px solid var(--ink); padding-top:10px; }
 .foot .who { font-family:"News",serif; font-style:italic; font-size:36px; font-weight:600; line-height:1; }
-.foot .when { font-size:16px; font-weight:600; color:var(--graphite); }
+.foot .when { font-size:16px; font-weight:600; color:var(--ink); }
 .foot .acts { margin-left:auto; display:flex; gap:10px; }
 .foot .btn { height:46px; }
 {% endblock %}
 {% block body %}
 {% set n = d.note %}
 <div class="q">&ldquo;</div>
-<div class="text">{{ n.text }}</div>
+<div class="text">{{ n.text }}&rdquo;</div>
 <div class="foot">
   <div class="who">{{ n.from }}</div><div class="when">pinned at {{ n.when }}</div>
   <div class="acts">
@@ -19,7 +19,7 @@
       <svg width="20" height="18" viewBox="0 0 30 28"><path d="M15 26S2 18 2 9a6.5 6.5 0 0 1 13-1 6.5 6.5 0 0 1 13 1c0 9-13 17-13 17z" fill="{{ '#000' if hearted else 'none' }}" stroke="#000" stroke-width="3" stroke-linejoin="round"/></svg>
       {{ 'Sent' if hearted else 'Heart' }}
     </div>
-    <div class="btn dark" data-tap="reply">Reply</div>
+    <div class="btn line" data-tap="reply">Reply by voice</div>
   </div>
 </div>
 {% endblock %}

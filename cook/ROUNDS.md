@@ -58,3 +58,12 @@ Measured: proto_test 19/19 gestures land on the right frame. shoot 390: overflow
 Top gaps: small gray text everywhere; hatch fills moire risk; listening screen generic; reader clips last line; note/listening lack the folio.
 Progress note: files could not be delivered (no project thread); summary in chat.
 Next focus: system fixes (min 15px, no hatching, folio everywhere), then listening, note, approve, countdown.
+
+## Round 02
+
+Time: 19:20 to 19:40
+Focus: system fixes from round 1 (sizes, hatching, folio), listening/note/approve/countdown rebuilt.
+Scores, eyeballed (2 critics, median, of 10): board 6.5, approve 6.8, today 7.4, countdown 7.3, photo 6.4, onthisday 6.8, note 7.6, listening 6.4, voice_result 7.2, art 5, reader 7.8, proto 5.8.
+Measured: proto_test 19/19. shoot 390 overflow none, taps under 44 0.
+Top gaps (both critics): pill buttons and spinners read as web UI; art thin gray lines; dead bands on approve/voice_result/countdown; light gray dashed elements fail in 1-bit fast refresh.
+Next: square buttons system-wide, still state marks, art in black, close dead bands.

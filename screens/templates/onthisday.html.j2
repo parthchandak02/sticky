@@ -6,8 +6,8 @@
 .col .u { font-family:"News",serif; font-size:34px; font-style:italic; margin-top:10px; line-height:1.05; }
 .col .rule { height:3px; background:var(--ink); margin:20px 0 14px; }
 .col .place { font-family:"News",serif; font-size:28px; font-weight:600; line-height:1.1; }
-.col .meta { font-size:16px; font-weight:600; color:var(--graphite); margin-top:4px; }
-.col .foot { margin-top:auto; display:flex; justify-content:space-between; align-items:center; font-size:16px; font-weight:700; }
+.col .meta { font-family:"News",serif; font-style:italic; font-size:22px; margin-top:4px; }
+.col .foot { margin-top:auto; display:flex; justify-content:space-between; align-items:center; font-size:16px; font-weight:600; color:var(--graphite); border-top:1.5px solid var(--pencil); padding-top:10px; }
 {% endblock %}
 {% block body %}
 <img class="ph" src="../img/photo_half.png" data-tap="photo:next">
@@ -16,7 +16,7 @@
   <div class="u">years ago today</div>
   <div class="rule"></div>
   <div class="place">Ubud, Bali</div>
-  <div class="meta">15 November 2024, the rainy week</div>
-  <div class="foot"><span>Swipe up for more</span><span class="dots">{% for i in range(deck_len) %}<i class="{{ 'on' if i == deck_idx }}"></i>{% endfor %}</span></div>
+  <div class="meta">The rainy week</div>
+  <div class="foot"><span>15 Nov 2024</span><span class="dots">{% for i in range(deck_len) %}<i class="{{ 'on' if i == deck_idx }}"></i>{% endfor %}</span></div>
 </div>
 {% endblock %}

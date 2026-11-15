@@ -146,7 +146,7 @@
   },
   "voice_result": {
    "template": "voice",
-   "title": "Voice note",
+   "title": "Task",
    "set": {
     "mode": "result"
    }

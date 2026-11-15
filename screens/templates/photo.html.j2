@@ -4,20 +4,18 @@
 .band { position:absolute; left:0; right:0; bottom:0; height:76px; background:var(--paper); border-top:3px solid var(--ink);
   display:flex; align-items:center; padding:0 var(--m); gap:18px; }
 .band .place { font-family:"News",serif; font-style:italic; font-size:30px; font-weight:500; line-height:1; }
-.band .from { font-size:16px; font-weight:600; color:var(--graphite); }
-.band .dots { margin-left:auto; }
-.heart { height:48px; padding:0 18px 0 14px; border-radius:24px; border:2px solid var(--ink); display:flex; align-items:center; gap:8px; font-size:16px; font-weight:700; }
-.heart.sent { background:var(--ink); color:var(--paper); }
+.band .from { font-size:16px; font-weight:600; color:var(--ink); }
+
+.heart { margin-left:auto; width:52px; height:52px; display:grid; place-items:center; }
+
 {% endblock %}
 {% block body %}
 <img class="ph" src="../img/photo_full.png" data-tap="photo:next">
 <div class="band">
   <div class="place">Ubud, in the rain</div>
-  <div class="from">from P, 2h ago</div>
-  <div class="dots">{% for i in range(deck_len) %}<i class="{{ 'on' if i == deck_idx }}"></i>{% endfor %}</div>
+  <div class="from">from P, 2h ago{{ ", heart sent" if hearted }}</div>
   <div class="heart {{ 'sent' if hearted }}" data-tap="heart">
-    <svg width="22" height="20" viewBox="0 0 30 28"><path d="M15 26S2 18 2 9a6.5 6.5 0 0 1 13-1 6.5 6.5 0 0 1 13 1c0 9-13 17-13 17z" fill="{{ '#fff' if hearted else 'none' }}" stroke="{{ '#fff' if hearted else '#000' }}" stroke-width="3" stroke-linejoin="round"/></svg>
-    {{ 'Sent' if hearted else 'Heart' }}
+    <svg width="34" height="31" viewBox="0 0 30 28"><path d="M15 26S2 18 2 9a6.5 6.5 0 0 1 13-1 6.5 6.5 0 0 1 13 1c0 9-13 17-13 17z" fill="{{ '#000' if hearted else 'none' }}" stroke="#000" stroke-width="2.6" stroke-linejoin="round"/></svg>
   </div>
 </div>
 {% endblock %}

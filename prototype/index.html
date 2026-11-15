@@ -48,19 +48,19 @@ html, body { height: 100%; background: radial-gradient(120% 90% at 50% 40%, #eef
 /* Side panel: what you can do */
 .panel { position: absolute; left: 28px; top: 24px; width: 258px; }
 .panel h1 { font-family: "News", serif; font-style: italic; font-weight: 500; font-size: 30px; line-height: 1; }
-.panel .sub { font-size: 13px; color: var(--soft); margin-top: 6px; }
+.panel .sub { font-size: 14px; color: var(--soft); margin-top: 6px; }
 .panel ul { list-style: none; padding: 0; margin-top: 18px; }
-.panel li { display: grid; grid-template-columns: 66px 1fr; gap: 8px; font-size: 13px; padding: 7px 0; border-top: 1px solid rgba(0,0,0,.09); }
+.panel li { display: grid; grid-template-columns: 66px 1fr; gap: 8px; font-size: 14px; padding: 7px 0; border-top: 1px solid rgba(0,0,0,.09); }
 .panel li b { font-weight: 600; }
 .panel li span { color: var(--soft); }
-.ctrl { position: absolute; left: 28px; top: 400px; width: 258px; display: flex; flex-direction: column; }
+.ctrl { position: absolute; left: 28px; top: 330px; width: 258px; display: flex; flex-direction: column; }
 .ctrl button { font: 600 14px "Sans", system-ui; text-align: left; height: 40px; padding: 0; border: 0; border-top: 1px solid rgba(0,0,0,.09); background: none; color: var(--ink); cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
 .ctrl button::after { content: "Off"; color: var(--soft); font-weight: 600; }
 .ctrl button.on::after { content: "On"; color: var(--ink); }
 .ctrl button.act::after { content: "\2192"; color: var(--soft); }
 .status { position: absolute; left: 50%; bottom: 22px; transform: translateX(-50%); font-size: 13px; color: var(--soft); font-weight: 600; white-space: nowrap; }
 .status b { color: var(--ink); }
-@media (min-width: 1101px) { .stage { left: 300px; } .status { left: calc(50% + 150px); } }
+@media (min-width: 1101px) { .stage { left: 300px; } .status { left: calc(50% + 150px); bottom: auto; top: calc(50% + 300px); } }
 @media (max-width: 1100px) {
   .panel { display: none; }
   .ctrl { left: 12px; right: 12px; width: auto; top: auto; bottom: 14px; flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 8px; }
@@ -95,15 +95,13 @@ html, body { height: 100%; background: radial-gradient(120% 90% at 50% 40%, #eef
 
 <aside class="panel">
   <h1>Sticky</h1>
-  <div class="sub">Every frame here is the real 4-gray render.</div>
+  <div class="sub">Real 4-gray frames, real refresh timing.</div>
   <ul>
-    <li><b>Swipe</b><span>left or right for the next page</span></li>
-    <li><b>Swipe</b><span>up or down for more on a page</span></li>
-    <li><b>Tap</b><span>cards, hearts, buttons, page edges</span></li>
-    <li><b>Hold</b><span>the allow dial, 1 second</span></li>
-    <li><b>Up, Down</b><span>buttons on top, or arrow keys</span></li>
-    <li><b>Talk</b><span>hold the black button, or space</span></li>
-    <li><b>Turn</b><span>portrait opens the book, R key</span></li>
+    <li><b>Swipe</b><span>sideways for pages</span></li>
+    <li><b>Swipe</b><span>up or down for more</span></li>
+    <li><b>Tap</b><span>cards, hearts, buttons</span></li>
+    <li><b>Hold</b><span>the dial to allow</span></li>
+    <li><b>Talk</b><span>hold the black key</span></li>
   </ul>
 </aside>
 <div class="ctrl">

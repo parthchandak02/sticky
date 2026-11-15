@@ -5,7 +5,7 @@
 .mast .date { font-family:"News",serif; font-style:italic; font-size:30px; margin-top:6px; }
 .wx { position:absolute; right:var(--m); top:56px; display:flex; gap:16px; align-items:flex-start; }
 .wx .t { font-family:"News",serif; font-size:84px; font-weight:500; line-height:0.85; letter-spacing:-0.03em; }
-.wx .t sup { font-size:40px; vertical-align:top; }
+.wx .t sup { font-size:44px; vertical-align:top; position:relative; top:6px; margin-left:-4px; }
 .wx .info { font-size:15px; font-weight:600; color:var(--graphite); line-height:1.5; margin-top:2px; }
 .wx .info b { color:var(--ink); font-size:18px; display:block; }
 
@@ -14,17 +14,17 @@
 .line .past { position:absolute; left:0; top:40px; height:44px; }
 .ev { position:absolute; top:40px; height:44px; border:2px solid var(--ink); background:var(--paper); }
 .lab { position:absolute; top:12px; font-size:15px; font-weight:700; white-space:nowrap; }
-.lab.done { color:var(--graphite); }
-.ev.done { border-color:var(--graphite); background:var(--paper); }
+.lab.done { color:var(--graphite); font-weight:600; }
+.ev.done { border-color:var(--pencil); background:var(--pencil); }
 
 .ev.next { background:var(--ink); color:var(--paper); }
 
-.hr { position:absolute; top:92px; font-size:14px; font-weight:700; color:var(--ink); transform:translateX(-50%); }
+.hr { position:absolute; top:90px; font-family:"News",serif; font-size:17px; font-weight:500; color:var(--ink); transform:translateX(-50%); }
 .tick { position:absolute; top:86px; width:1.5px; height:5px; background:var(--ink); }
 .now { position:absolute; top:30px; bottom:18px; width:3px; background:var(--ink); }
 .now::before { content:""; position:absolute; left:-6px; top:-6px; border:7.5px solid transparent; border-top:9px solid var(--ink); }
 
-.upnext { position:absolute; left:var(--m); right:var(--m); top:330px; display:grid; grid-template-columns:1.25fr 1fr 1fr; gap:var(--g); }
+.upnext { position:absolute; left:var(--m); right:var(--m); bottom:22px; display:grid; grid-template-columns:repeat(3, 1fr); gap:24px; }
 .card { border-top:2px solid var(--ink); padding-top:10px; }
 .card .when { font-family:"News",serif; font-size:40px; font-weight:500; line-height:1; letter-spacing:-0.02em; }
 .card .when i { font-size:20px; font-style:italic; margin-left:4px; }
@@ -38,7 +38,7 @@
 <div class="mast"><div class="day">{{ t.day }}</div><div class="date">{{ t.date }}</div></div>
 <div class="wx">
   <div class="t">{{ t.temp }}<sup>°</sup></div>
-  <div class="info"><b>{{ t.sky }}</b>High {{ t.hi }}°, low {{ t.lo }}°<br>Inside {{ t.inside }}, {{ t.humidity }}</div>
+  <div class="info"><b>{{ t.sky }}</b>{{ t.hi }}° / {{ t.lo }}°, 21° inside</div>
 </div>
 
 {% set h0, h1 = 7, 23 %}

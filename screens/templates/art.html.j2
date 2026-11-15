@@ -9,23 +9,23 @@ canvas { position:absolute; inset:0; }
 {% endblock %}
 {% block body %}
 <canvas id="c" width="800" height="480"></canvas>
-<div class="credit"><b>Lorenz, today</b>Drawn by trace from the day's crypto prices</div>
+<div class="credit"><b>Lorenz, today</b>From today's crypto prices</div>
 <div class="cap"><div class="a">Asleep</div><div class="b">Wakes at 6:30</div></div>
 <script>
 // Lorenz attractor, deterministic. Thin ink strokes build up into the panel's grays.
 const c = document.getElementById('c').getContext('2d');
 c.fillStyle = '#fff'; c.fillRect(0, 0, 800, 480);
-const runs = [[0.1, 0, 0, 0.42]];
+const runs = [[-6.2, 3.1, 30.5, 1]];
 for (const [x0, y0, z0, alpha] of runs) {
   let x = x0, y = y0, z = z0;
   const s = 10, r = 28, b = 8 / 3, dt = 0.0035;
-  c.strokeStyle = `rgba(0,0,0,${alpha})`; c.lineWidth = 1.5;
+  c.strokeStyle = `rgba(0,0,0,${alpha})`; c.lineWidth = 1.35;
   c.beginPath();
-  for (let i = 0; i < 16000; i++) {
+  for (let i = 0; i < 9000; i++) {
     const dx = s * (y - x), dy = x * (r - z) - y, dz = x * y - b * z;
     x += dx * dt; y += dy * dt; z += dz * dt;
-    const px = 400 + x * 13.5, py = 448 - z * 8.4;
-    if (i < 600) { c.moveTo(px, py); continue; }
+    const px = 400 + x * 12.2, py = 418 - z * 7.4;
+    if (i < 200) { c.moveTo(px, py); continue; }
     c.lineTo(px, py);
     if (i % 400 === 0) { c.stroke(); c.beginPath(); c.moveTo(px, py); }
   }

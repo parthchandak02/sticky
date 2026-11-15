@@ -1,18 +1,19 @@
 {% extends "_layout.html.j2" %}
 {% block style %}
-.head { position:absolute; left:40px; right:40px; top:0; height:46px; display:flex; justify-content:space-between; align-items:center; border-bottom:1.5px solid var(--ink); }
+.head { position:absolute; left:48px; right:48px; top:0; height:46px; display:flex; justify-content:space-between; align-items:center; border-bottom:1.5px solid var(--ink); }
 .head .book { font-family:"News",serif; font-style:italic; font-size:19px; }
-.head .ch { font-size:15px; font-weight:700; color:var(--graphite); }
-.body { position:absolute; left:40px; right:40px; top:66px; height:630px; overflow:hidden;
+.head .ch { font-family:"News",serif; font-style:italic; font-size:18px; color:var(--graphite); }
+.body { position:absolute; left:48px; right:48px; top:66px; height:630px; overflow:hidden;
   font-family:"News",serif; font-size:20px; line-height:30px; text-align:justify; hyphens:auto; text-wrap:pretty; word-spacing:-0.02em; font-variation-settings:"opsz" 12; }
 .body p { text-indent:1.3em; }
 .body p.first { text-indent:0; }
-.body p.first::first-letter { float:left; font-size:86px; line-height:76px; font-weight:600; padding:4px 8px 0 0; margin-bottom:-6px; }
+.body p.first::first-letter { float:left; font-size:84px; line-height:72px; font-weight:600; padding:6px 4px 0 0; margin-bottom:-4px; }
 .body .chapter { font-family:"News",serif; font-size:40px; font-weight:600; letter-spacing:-0.01em; margin-bottom:30px; text-indent:0; line-height:60px; height:60px; }
-.foot { position:absolute; left:40px; right:40px; bottom:24px; }
+.foot { position:absolute; left:48px; right:48px; bottom:24px; }
 .foot .bar { height:4px; border-radius:2px; background:var(--pencil); position:relative; }
 .foot .bar i { position:absolute; left:0; top:-1px; bottom:-1px; background:var(--ink); }
-.foot .meta { display:flex; justify-content:space-between; font-size:15px; font-weight:700; color:var(--graphite); margin-top:8px; }
+.foot .meta { display:flex; justify-content:space-between; font-family:"News",serif; font-size:17px; color:var(--graphite); margin-top:8px; }
+.foot .meta i { font-style:italic; }
 .zone { position:absolute; top:46px; bottom:60px; }
 {% endblock %}
 {% block body %}
@@ -31,7 +32,7 @@
 </div>
 <div class="foot">
   <div class="bar"><i style="width:{{ (page + 11) / 318 * 100 }}%"></i></div>
-  <div class="meta"><span>{{ page + 11 }} of 318</span><span>{{ 9 - page }} min left in chapter</span></div>
+  <div class="meta"><span>{{ page + 11 }} of 318</span><i>{{ 9 - page }} min left in chapter</i></div>
 </div>
 <div class="zone" style="left:0;width:33%" data-tap="page:prev"></div>
 <div class="zone" style="right:0;width:67%" data-tap="page:next"></div>
