@@ -17,7 +17,7 @@
 // Kept in the image on purpose: boardTag() is read at boot so the linker cannot drop it.
 extern "C" __attribute__((used)) const char STICKY_BOARD_TAG[] = "CROSSPOINT-BOARD-V1:sticky;";
 extern "C" __attribute__((used)) const char* const STICKY_BOARD_TAG_PTR = STICKY_BOARD_TAG;
-const char* boardTag() { return *(const char* volatile*)(&STICKY_BOARD_TAG_PTR); }
+const char* ota::boardTag() { return *(const char* volatile*)(&STICKY_BOARD_TAG_PTR); }
 
 namespace ota {
 namespace {
