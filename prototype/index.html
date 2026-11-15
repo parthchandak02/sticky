@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sticky prototype</title>
+<style>
+@font-face { font-family: "Sans"; src: url("../assets/fonts/Inter-400.ttf"); font-weight: 400; }
+@font-face { font-family: "Sans"; src: url("../assets/fonts/Inter-600.ttf"); font-weight: 600; }
+@font-face { font-family: "News"; src: url("../assets/fonts/Newsreader-Italic-VF.ttf"); font-style: italic; }
+:root { --bg: #dfe2e6; --ink: #15171a; --soft: #5d636b; }
+* { box-sizing: border-box; margin: 0; }
+html, body { height: 100%; background: radial-gradient(120% 90% at 50% 40%, #eef0f2 0%, var(--bg) 70%); color: var(--ink);
+  font-family: "Sans", system-ui, sans-serif; -webkit-font-smoothing: antialiased; overflow: hidden; touch-action: none; }
+.stage { position: absolute; inset: 0 0 40px; overflow: hidden; }
+
+/* The device: 106 x 65.5 mm body around an 86.4 x 51.8 mm glass (800 x 480 px) */
+.device { position: absolute; left: 50%; top: 50%; margin: -303.5px 0 0 -491px; width: 982px; height: 607px; border-radius: 58px; transform-origin: 50% 50%;
+  background: linear-gradient(160deg, #fbfbfa 0%, #f1f1ef 55%, #e6e6e3 100%);
+  box-shadow: 0 1px 0 #fff inset, 0 -2px 0 rgba(0,0,0,.05) inset, 0 40px 60px -30px rgba(20,25,35,.45), 0 12px 24px -12px rgba(20,25,35,.35), 0 0 0 1px rgba(0,0,0,.06);
+  transition: transform 700ms cubic-bezier(.6,0,.2,1); }
+.device.portrait { transform: rotate(-90deg); }
+.glass { position: absolute; left: 91px; top: 64px; width: 800px; height: 480px; overflow: hidden; background: #f4f4f1;
+  box-shadow: 0 0 0 2px #d9d9d5, 0 0 0 3px #c9c9c4, inset 0 1px 3px rgba(0,0,0,.18); border-radius: 3px; }
+.glass img { position: absolute; left: 0; top: 0; width: 800px; height: 480px; image-rendering: auto; user-select: none; -webkit-user-drag: none;
+  filter: contrast(.92) brightness(.97) sepia(.04); mix-blend-mode: multiply; }
+.glass img.portrait { width: 480px; height: 800px; left: 160px; top: -160px; transform: rotate(90deg); }
+.glass .ghost { opacity: 0; }
+.glass .flash { position: absolute; inset: 0; background: #111; opacity: 0; pointer-events: none; }
+.glass .sheen { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(115deg, rgba(255,255,255,.22) 0%, rgba(255,255,255,0) 38%); }
+
+/* Buttons on the top edge: AI voice, page up, page down */
+.keys { position: absolute; top: -9px; right: 120px; display: flex; gap: 18px; }
+.key { width: 64px; height: 12px; border-radius: 6px 6px 2px 2px; background: linear-gradient(#f6f6f4, #dcdcd8); box-shadow: 0 -1px 0 #fff inset, 0 0 0 1px rgba(0,0,0,.12); cursor: pointer; position: relative; }
+.key.ai { width: 86px; background: linear-gradient(#2a2c30, #16171a); }
+.key:active, .key.down { transform: translateY(3px); }
+.key span { position: absolute; top: -26px; left: 50%; transform: translateX(-50%); font-size: 12px; font-weight: 600; color: var(--soft); white-space: nowrap; pointer-events: none; }
+.device.portrait .key span { transform: translateX(-50%) rotate(90deg); top: -40px; }
+.logo { position: absolute; bottom: 22px; left: 50%; transform: translateX(-50%); font-size: 11px; letter-spacing: .02em; color: #a5a8a6; font-weight: 600; }
+
+.touch { position: absolute; z-index: 5; cursor: pointer; }
+.touch .hot { position: absolute; border: 2px dashed rgba(220, 70, 40, .85); border-radius: 4px; display: none; pointer-events: none; }
+.show-hot .touch .hot { display: block; }
+.finger { position: fixed; width: 44px; height: 44px; margin: -22px 0 0 -22px; border-radius: 50%; background: rgba(30,35,45,.18); box-shadow: 0 0 0 2px rgba(30,35,45,.25); pointer-events: none; z-index: 9; opacity: 0; transition: opacity 160ms; }
+.finger.on { opacity: 1; }
+.trail { position: fixed; height: 6px; margin-top: -3px; border-radius: 3px; background: rgba(30,35,45,.2); transform-origin: 0 50%; pointer-events: none; z-index: 8; opacity: 0; transition: opacity 300ms; }
+
+/* Side panel: what you can do */
+.panel { position: absolute; left: 28px; top: 24px; width: 258px; }
+.panel h1 { font-family: "News", serif; font-style: italic; font-weight: 500; font-size: 30px; line-height: 1; }
+.panel .sub { font-size: 13px; color: var(--soft); margin-top: 6px; }
+.panel ul { list-style: none; padding: 0; margin-top: 18px; }
+.panel li { display: grid; grid-template-columns: 66px 1fr; gap: 8px; font-size: 13px; padding: 7px 0; border-top: 1px solid rgba(0,0,0,.09); }
+.panel li b { font-weight: 600; }
+.panel li span { color: var(--soft); }
+.ctrl { position: absolute; right: 28px; top: 24px; display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
+.ctrl button { font: 600 13px "Sans", system-ui; height: 36px; padding: 0 14px; border-radius: 18px; border: 1px solid rgba(0,0,0,.14); background: #fff; color: var(--ink); cursor: pointer; }
+.ctrl button.on { background: var(--ink); color: #fff; }
+.status { position: absolute; left: 50%; bottom: 22px; transform: translateX(-50%); font-size: 13px; color: var(--soft); font-weight: 600; white-space: nowrap; }
+.status b { color: var(--ink); }
+@media (max-width: 1100px) {
+  .panel { display: none; }
+  .ctrl { left: 12px; right: 12px; top: auto; bottom: 14px; flex-direction: row; flex-wrap: wrap; justify-content: center; }
+  .ctrl button { height: 44px; padding: 0 14px; }
+  .status { bottom: 128px; }
+  .stage { inset: 0 0 150px; }
+}
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="device" id="device">
+    <div class="keys">
+      <div class="key ai" id="k-ai"><span>Hold to talk</span></div>
+      <div class="key" id="k-up"><span>Up</span></div>
+      <div class="key" id="k-down"><span>Down</span></div>
+    </div>
+    <div class="glass" id="glass">
+      <img id="ghost" class="ghost" alt="">
+      <img id="img" alt="Sticky screen">
+      <div class="flash" id="flash"></div>
+      <div class="sheen"></div>
+    </div>
+    <div class="logo">reTerminal Sticky</div>
+  </div>
+</div>
+<div class="touch" id="touch"></div>
+<div class="finger" id="finger"></div>
+<div class="trail" id="trail"></div>
+
+<aside class="panel">
+  <h1>Sticky</h1>
+  <div class="sub">Every frame here is the real 4-gray render.</div>
+  <ul>
+    <li><b>Swipe</b><span>left or right for the next page</span></li>
+    <li><b>Swipe</b><span>up or down for more on a page</span></li>
+    <li><b>Tap</b><span>cards, hearts, buttons, page edges</span></li>
+    <li><b>Hold</b><span>the allow dial, 1 second</span></li>
+    <li><b>Up, Down</b><span>buttons on top, or arrow keys</span></li>
+    <li><b>Talk</b><span>hold the black button, or space</span></li>
+    <li><b>Turn</b><span>portrait opens the book, R key</span></li>
+  </ul>
+</aside>
+<div class="ctrl">
+  <button id="b-rotate">Turn it</button>
+  <button id="b-sleep">Leave it alone</button>
+  <button id="b-speed" class="on">Real e-ink timing</button>
+  <button id="b-hot">Show touch areas</button>
+</div>
+<div class="status" id="status"></div>
+
+<script>
+const OUT = '../screens/out/';
+const $ = (id) => document.getElementById(id);
+let seq = 0, M, cur = 'board', history = [], busy = false, real = true, ghostLevel = 0;
+
+const wait = (ms) => new Promise((r) => setTimeout(r, real ? ms : Math.min(ms, 40)));
+
+function frame(id) { return M.frames[id]; }
+function deckOf(id) { return frame(id).deck_as; }
+
+function say(text) { $('status').innerHTML = text; }
+
+async function show(id, mode = 'full') {
+  if (!M.frames[id]) return;
+  if (busy && mode !== 'step') return;
+  if (mode !== 'step') busy = true;
+  const my = ++seq;
+  const prev = cur, f = frame(id), img = $('img'), ghost = $('ghost'), flash = $('flash');
+  const src = OUT + f.img + '?v=' + M.v;
+  await new Promise((res) => { const p = new Image(); p.onload = res; p.src = src; });
+  if (my !== seq) { if (mode !== 'step') busy = false; return; }
+  if (mode === 'full' && real) {
+    // Full 4-gray refresh: invert, black, white, then the new image settles.
+    say('<b>Full refresh</b>, about 1.4 s on the panel');
+    img.style.filter = 'invert(1) contrast(.9)'; await wait(180);
+    flash.style.background = '#111'; flash.style.opacity = 1; await wait(260);
+    flash.style.background = '#f4f4f1'; await wait(260);
+    img.className = f.orient === 'portrait' ? 'portrait' : '';
+    img.src = src; img.style.filter = 'invert(1) contrast(.9)';
+    flash.style.opacity = 0; await wait(200);
+    img.style.filter = 'contrast(.75) brightness(1.08)'; await wait(220);
+    img.style.filter = '';
+    ghost.style.opacity = 0; ghostLevel = 0;
+  } else {
+    // Partial refresh: fast, leaves a faint ghost of the old picture until the next full one.
+    say('<b>Partial refresh</b>, about 0.3 s');
+    ghost.className = 'ghost ' + (img.className || ''); ghost.src = img.src;
+    ghostLevel = Math.min(ghostLevel + 0.05, 0.12);
+    img.className = f.orient === 'portrait' ? 'portrait' : '';
+    img.src = src;
+    if (real) { img.style.filter = 'contrast(.6) brightness(1.15)'; await wait(140); img.style.filter = ''; }
+    ghost.style.opacity = real ? ghostLevel : 0;
+    await wait(120);
+  }
+  if (my !== seq) { if (mode !== 'step') busy = false; return; }
+  if (mode !== 'step') { if (prev !== id) history.push(prev); }
+  cur = id;
+  layoutTouch();
+  if (mode !== 'step') busy = false;
+  setTimeout(() => say(hint()), real ? 900 : 10);
+  armSleep();
+}
+
+function hint() {
+  const d = deckOf(cur), i = M.deck.indexOf(d);
+  const name = { board: 'The Board', today: 'Today', countdown: 'Counting down', photo: 'Photos', note: 'Note' }[d] || '';
+  if (frame(cur).orient === 'portrait') return '<b>Reading</b>, tap the right side or swipe up to turn the page';
+  if (cur === 'art') return '<b>Asleep</b>, press a button or tap to wake';
+  return i >= 0 ? `<b>${name}</b>, page ${i + 1} of ${M.deck.length}` : '';
+}
+
+/* ---------- touch layer sits exactly over the glass, upright ---------- */
+function layoutTouch() {
+  if (!M) return;
+  const r = $('glass').getBoundingClientRect(), t = $('touch'), f = frame(cur);
+  Object.assign(t.style, { left: r.left + 'px', top: r.top + 'px', width: r.width + 'px', height: r.height + 'px' });
+  const sx = r.width / f.w, sy = r.height / f.h;
+  t.innerHTML = '';
+  for (const h of f.hotspots) {
+    const d = document.createElement('div'); d.className = 'hot';
+    Object.assign(d.style, { left: h.x * sx + 'px', top: h.y * sy + 'px', width: h.w * sx + 'px', height: h.h * sy + 'px' });
+    t.appendChild(d);
+  }
+}
+function toFrame(e) {
+  const r = $('touch').getBoundingClientRect(), f = frame(cur);
+  return { x: (e.clientX - r.left) / r.width * f.w, y: (e.clientY - r.top) / r.height * f.h };
+}
+function hitAt(p, kind) {
+  const hs = frame(cur).hotspots.filter((h) => (!kind || h.kind === kind) && p.x >= h.x && p.x <= h.x + h.w && p.y >= h.y && p.y <= h.y + h.h);
+  return hs.sort((a, b) => a.w * a.h - b.w * b.h)[0];
+}
+
+function back() {
+  let t;
+  do { t = history.pop(); } while (t && /^(listening|voice_result|approve_h\d|art)$/.test(t));
+  return t || 'board';
+}
+function target(action, from = cur) {
+  const t = (M.actions[from] || {})[action];
+  if (t === '@back') return back();
+  return t;
+}
+
+async function deck(step) {
+  if (frame(cur).orient === 'portrait') return page(step);
+  if (cur === 'art') return show(back());
+  const d = deckOf(cur), i = M.deck.indexOf(d);
+  const n = M.deck[(i + step + M.deck.length) % M.deck.length];
+  history = [];
+  return show(n, 'full');
+}
+async function page(step) {
+  const m = M.scroll[cur] || {};
+  const t = step > 0 ? (m.up || m.left) : (m.down || m.right);
+  if (t) show(t, 'partial');
+}
+
+/* ---------- pointer: tap, hold, swipe ---------- */
+let down = null, holdTimer = null, holdStep = 0, holdDone = false;
+const touch = $('touch'), finger = $('finger'), trail = $('trail');
+
+touch.addEventListener('pointerdown', (e) => {
+  if (busy) return;
+  touch.setPointerCapture(e.pointerId);
+  const p = toFrame(e);
+  down = { x: e.clientX, y: e.clientY, p, t: performance.now(), moved: false, hold: hitAt(p, 'hold') };
+  finger.style.left = e.clientX + 'px'; finger.style.top = e.clientY + 'px'; finger.classList.add('on');
+  if (down.hold) startHold(down.hold);
+});
+touch.addEventListener('pointermove', (e) => {
+  if (!down) return;
+  const dx = e.clientX - down.x, dy = e.clientY - down.y;
+  finger.style.left = e.clientX + 'px'; finger.style.top = e.clientY + 'px';
+  if (Math.hypot(dx, dy) > 14) {
+    down.moved = true; cancelHold();
+    trail.style.left = down.x + 'px'; trail.style.top = down.y + 'px';
+    trail.style.width = Math.hypot(dx, dy) + 'px'; trail.style.transform = `rotate(${Math.atan2(dy, dx)}rad)`; trail.style.opacity = 1;
+  }
+});
+touch.addEventListener('pointerup', (e) => {
+  if (!down) return;
+  finger.classList.remove('on'); trail.style.opacity = 0;
+  const dx = e.clientX - down.x, dy = e.clientY - down.y, dist = Math.hypot(dx, dy);
+  const wasHolding = holdTimer !== null || holdStep > 0;
+  const d = down; down = null;
+  if (holdDone) { holdDone = false; return; }
+  if (wasHolding) { cancelHold(true); return; }
+  if (dist > 40) {
+    // Swipe directions are in screen space; in portrait the reader handles all four.
+    const horiz = Math.abs(dx) > Math.abs(dy);
+    if (frame(cur).orient === 'portrait') { page(horiz ? (dx < 0 ? 1 : -1) : (dy < 0 ? 1 : -1)); return; }
+    if (horiz) { deck(dx < 0 ? 1 : -1); return; }
+    const m = M.scroll[cur]; if (m) { const t = dy < 0 ? m.up : m.down; if (t) show(t, 'partial'); }
+    return;
+  }
+  if (cur === 'art') { deck(0); return; }
+  const h = hitAt(d.p, 'tap') || hitAt(d.p);
+  if (!h) { say('No action there'); return; }
+  const t = target(h.action);
+  if (!t) { say(`Tap: <b>${h.action}</b>`); return; }
+  const sameDeck = deckOf(t) === deckOf(cur) && frame(t).orient === frame(cur).orient;
+  show(t, sameDeck && !t.startsWith('approve') && !cur.startsWith('approve') ? 'partial' : 'full');
+});
+
+function startHold(h) {
+  const origin = cur.replace(/_h\d$/, '');
+  const cfg = (M.holds[h.action] || {})[cur] || [];
+  const ms = (M.holds[h.action] || {}).ms || 1000;
+  holdStep = 0;
+  say('<b>Holding</b>, keep your finger down');
+  const steps = cfg.length ? cfg : [null];
+  const tick = () => {
+    holdStep++;
+    const s = steps[holdStep - 1];
+    if (s) show(s, 'step');
+    if (holdStep >= steps.length) {
+      holdTimer = null; holdStep = 0; holdDone = true;
+      const t = target(h.action, origin);
+      setTimeout(() => { if (t) show(t, 'full'); }, real ? 200 : 10);
+      return;
+    }
+    holdTimer = setTimeout(tick, (real ? ms : 120) / steps.length);
+  };
+  holdTimer = setTimeout(tick, (real ? ms : 120) / steps.length);
+}
+function cancelHold(released) {
+  if (holdTimer) { clearTimeout(holdTimer); holdTimer = null; }
+  if (holdStep > 0 && released) { const base = cur.replace(/_h\d$/, ''); holdStep = 0; show(base, 'step'); say('Let go too early, nothing happened'); }
+  holdStep = 0;
+}
+
+/* ---------- physical buttons ---------- */
+let aiFrom = null;
+async function aiDown() {
+  if (busy || cur === 'listening') return;
+  $('k-ai').classList.add('down');
+  aiFrom = frame(cur).orient === 'portrait' ? 'reader_1' : cur;
+  if (frame(cur).orient === 'portrait') await rotate(false);
+  await show('listening', 'full');
+}
+async function aiUp() {
+  $('k-ai').classList.remove('down');
+  if (cur !== 'listening') return;
+  say('<b>Sending</b>, whisper turns it into a note');
+  await wait(900);
+  show('voice_result', 'partial');
+}
+$('k-ai').addEventListener('pointerdown', aiDown);
+window.addEventListener('pointerup', () => { if ($('k-ai').classList.contains('down')) aiUp(); });
+$('k-up').addEventListener('click', () => deck(-1));
+$('k-down').addEventListener('click', () => deck(1));
+
+/* ---------- rotation, sleep ---------- */
+async function rotate(toPortrait) {
+  const dev = $('device');
+  if (toPortrait === undefined) toPortrait = !dev.classList.contains('portrait');
+  if (busy) return;
+  busy = true;
+  dev.classList.toggle('portrait', toPortrait);
+  $('touch').innerHTML = '';
+  await new Promise((r) => setTimeout(r, real ? 720 : 30));
+  busy = false;
+  say(toPortrait ? '<b>Turned</b>, the accelerometer opens your book' : '<b>Turned back</b>');
+  await show(toPortrait ? 'reader_1' : 'board', 'full');
+}
+$('b-rotate').onclick = () => rotate();
+let sleepTimer = null;
+function armSleep() { clearTimeout(sleepTimer); if (cur !== 'art') sleepTimer = setTimeout(() => { history.push(cur); show('art', 'full'); }, 90000); }
+$('b-sleep').onclick = () => { history.push(cur); show('art', 'full'); };
+$('b-speed').onclick = (e) => { real = !real; e.target.classList.toggle('on', real); e.target.textContent = real ? 'Real e-ink timing' : 'Instant'; };
+$('b-hot').onclick = (e) => { document.body.classList.toggle('show-hot'); e.target.classList.toggle('on'); };
+
+window.addEventListener('keydown', (e) => {
+  if (e.repeat) return;
+  if (e.key === 'ArrowRight') deck(1); else if (e.key === 'ArrowLeft') deck(-1);
+  else if (e.key === 'ArrowDown') page(1); else if (e.key === 'ArrowUp') page(-1);
+  else if (e.key === 'r' || e.key === 'R') rotate();
+  else if (e.key === ' ') { e.preventDefault(); aiDown(); }
+});
+window.addEventListener('keyup', (e) => { if (e.key === ' ') aiUp(); });
+
+window.sticky = { get cur() { return cur; }, get busy() { return busy; } };
+
+/* ---------- fit to window ---------- */
+function fit() {
+  const dev = $('device'), portrait = dev.classList.contains('portrait');
+  const w = portrait ? 607 : 982, h = portrait ? 982 : 607;
+  const st = document.querySelector('.stage').getBoundingClientRect();
+  const side = innerWidth > 1100 ? 600 : 28;
+  const s = Math.min((st.width - side) / w, (st.height - 60) / h, 1);
+  dev.style.scale = s;
+  layoutTouch();
+}
+addEventListener('resize', fit);
+$('device').addEventListener('transitionend', fit);
+
+fetch(OUT + 'manifest.json').then((r) => r.json()).then((m) => {
+  M = m; M.v = Date.now();
+  const start = new URLSearchParams(location.search).get('frame') || 'board';
+  if (start.startsWith('reader')) $('device').classList.add('portrait');
+  cur = start; $('img').src = OUT + frame(start).img + '?v=' + M.v;
+  $('img').className = frame(start).orient === 'portrait' ? 'portrait' : '';
+  if (new URLSearchParams(location.search).has('instant')) { real = false; $('b-speed').classList.remove('on'); $('b-speed').textContent = 'Instant'; }
+  $('img').onload = () => { fit(); say(hint()); $('img').onload = null; };
+  fit(); say(hint()); requestAnimationFrame(fit); setTimeout(fit, 300);
+  armSleep();
+});
+</script>
+</body>
+</html>

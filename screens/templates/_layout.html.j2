@@ -1,0 +1,18 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../templates/base.css">
+<style>{% block style %}{% endblock %}</style>
+</head>
+<body style="--w:{{ w }}px;--h:{{ h }}px" data-frame="{{ frame }}">
+{% if folio is not defined or folio %}
+<header class="folio">
+  <div class="title">{{ title }}</div>
+  <div class="fr">
+    <div class="dots">{% for i in range(deck_len) %}<i class="{{ 'on' if i == deck_idx }}"></i>{% endfor %}</div>
+    <span>{{ d.now }}</span>
+    <span class="batt"><b><span style="width:{{ (d.battery * 0.17)|round|int }}px"></span></b>{{ d.battery }}%</span>
+  </div>
+</header>
+{% endif %}
+{% block body %}{% endblock %}
+</body></html>

@@ -1,0 +1,389 @@
+{
+ "board": [
+  {
+   "kind": "tap",
+   "action": "open:approve",
+   "x": 336,
+   "y": 90,
+   "w": 440,
+   "h": 184
+  },
+  {
+   "kind": "tap",
+   "action": "deny:s1",
+   "x": 352,
+   "y": 212,
+   "w": 88,
+   "h": 48
+  },
+  {
+   "kind": "hold",
+   "action": "allow:s1",
+   "x": 450,
+   "y": 212,
+   "w": 310,
+   "h": 48
+  },
+  {
+   "kind": "tap",
+   "action": "session:s2",
+   "x": 336,
+   "y": 280,
+   "w": 440,
+   "h": 60
+  },
+  {
+   "kind": "tap",
+   "action": "session:s3",
+   "x": 336,
+   "y": 340,
+   "w": 440,
+   "h": 60
+  },
+  {
+   "kind": "tap",
+   "action": "session:s4",
+   "x": 336,
+   "y": 400,
+   "w": 440,
+   "h": 59
+  }
+ ],
+ "board_allowed": [
+  {
+   "kind": "tap",
+   "action": "session:s1",
+   "x": 336,
+   "y": 88,
+   "w": 440,
+   "h": 60
+  },
+  {
+   "kind": "tap",
+   "action": "session:s2",
+   "x": 336,
+   "y": 148,
+   "w": 440,
+   "h": 60
+  },
+  {
+   "kind": "tap",
+   "action": "session:s3",
+   "x": 336,
+   "y": 208,
+   "w": 440,
+   "h": 60
+  },
+  {
+   "kind": "tap",
+   "action": "session:s4",
+   "x": 336,
+   "y": 269,
+   "w": 440,
+   "h": 60
+  },
+  {
+   "kind": "tap",
+   "action": "session:s5",
+   "x": 336,
+   "y": 329,
+   "w": 440,
+   "h": 59
+  }
+ ],
+ "board_denied": [
+  {
+   "kind": "tap",
+   "action": "session:s1",
+   "x": 336,
+   "y": 88,
+   "w": 440,
+   "h": 60
+  },
+  {
+   "kind": "tap",
+   "action": "session:s2",
+   "x": 336,
+   "y": 148,
+   "w": 440,
+   "h": 60
+  },
+  {
+   "kind": "tap",
+   "action": "session:s3",
+   "x": 336,
+   "y": 208,
+   "w": 440,
+   "h": 60
+  },
+  {
+   "kind": "tap",
+   "action": "session:s4",
+   "x": 336,
+   "y": 269,
+   "w": 440,
+   "h": 60
+  },
+  {
+   "kind": "tap",
+   "action": "session:s5",
+   "x": 336,
+   "y": 329,
+   "w": 440,
+   "h": 59
+  }
+ ],
+ "approve": [
+  {
+   "kind": "tap",
+   "action": "back",
+   "x": 0,
+   "y": 0,
+   "w": 200,
+   "h": 44
+  },
+  {
+   "kind": "hold",
+   "action": "allow:s1",
+   "x": 533,
+   "y": 62,
+   "w": 236,
+   "h": 236
+  },
+  {
+   "kind": "tap",
+   "action": "deny:s1",
+   "x": 526,
+   "y": 406,
+   "w": 250,
+   "h": 52
+  }
+ ],
+ "approve_h1": [
+  {
+   "kind": "tap",
+   "action": "back",
+   "x": 0,
+   "y": 0,
+   "w": 200,
+   "h": 44
+  },
+  {
+   "kind": "hold",
+   "action": "allow:s1",
+   "x": 533,
+   "y": 62,
+   "w": 236,
+   "h": 236
+  },
+  {
+   "kind": "tap",
+   "action": "deny:s1",
+   "x": 526,
+   "y": 406,
+   "w": 250,
+   "h": 52
+  }
+ ],
+ "approve_h2": [
+  {
+   "kind": "tap",
+   "action": "back",
+   "x": 0,
+   "y": 0,
+   "w": 200,
+   "h": 44
+  },
+  {
+   "kind": "hold",
+   "action": "allow:s1",
+   "x": 533,
+   "y": 62,
+   "w": 236,
+   "h": 236
+  },
+  {
+   "kind": "tap",
+   "action": "deny:s1",
+   "x": 526,
+   "y": 406,
+   "w": 250,
+   "h": 52
+  }
+ ],
+ "approve_h3": [
+  {
+   "kind": "tap",
+   "action": "back",
+   "x": 0,
+   "y": 0,
+   "w": 200,
+   "h": 44
+  },
+  {
+   "kind": "hold",
+   "action": "allow:s1",
+   "x": 533,
+   "y": 62,
+   "w": 236,
+   "h": 236
+  },
+  {
+   "kind": "tap",
+   "action": "deny:s1",
+   "x": 526,
+   "y": 406,
+   "w": 250,
+   "h": 52
+  }
+ ],
+ "today": [
+  {
+   "kind": "tap",
+   "action": "event:0",
+   "x": 24,
+   "y": 322,
+   "w": 277,
+   "h": 98
+  }
+ ],
+ "countdown": [],
+ "photo": [
+  {
+   "kind": "tap",
+   "action": "photo:next",
+   "x": 0,
+   "y": 0,
+   "w": 800,
+   "h": 480
+  },
+  {
+   "kind": "tap",
+   "action": "heart",
+   "x": 720,
+   "y": 400,
+   "w": 60,
+   "h": 60
+  }
+ ],
+ "photo_hearted": [
+  {
+   "kind": "tap",
+   "action": "photo:next",
+   "x": 0,
+   "y": 0,
+   "w": 800,
+   "h": 480
+  },
+  {
+   "kind": "tap",
+   "action": "heart",
+   "x": 720,
+   "y": 400,
+   "w": 60,
+   "h": 60
+  }
+ ],
+ "onthisday": [
+  {
+   "kind": "tap",
+   "action": "photo:next",
+   "x": 0,
+   "y": 0,
+   "w": 440,
+   "h": 480
+  }
+ ],
+ "note": [
+  {
+   "kind": "tap",
+   "action": "heart",
+   "x": 526,
+   "y": 408,
+   "w": 148,
+   "h": 48
+  },
+  {
+   "kind": "tap",
+   "action": "reply",
+   "x": 684,
+   "y": 408,
+   "w": 92,
+   "h": 48
+  }
+ ],
+ "note_hearted": [
+  {
+   "kind": "tap",
+   "action": "heart",
+   "x": 590,
+   "y": 408,
+   "w": 84,
+   "h": 48
+  },
+  {
+   "kind": "tap",
+   "action": "reply",
+   "x": 684,
+   "y": 408,
+   "w": 92,
+   "h": 48
+  }
+ ],
+ "reader_1": [
+  {
+   "kind": "tap",
+   "action": "page:prev",
+   "x": 0,
+   "y": 46,
+   "w": 158,
+   "h": 694
+  },
+  {
+   "kind": "tap",
+   "action": "page:next",
+   "x": 158,
+   "y": 46,
+   "w": 322,
+   "h": 694
+  }
+ ],
+ "reader_2": [
+  {
+   "kind": "tap",
+   "action": "page:prev",
+   "x": 0,
+   "y": 46,
+   "w": 158,
+   "h": 694
+  },
+  {
+   "kind": "tap",
+   "action": "page:next",
+   "x": 158,
+   "y": 46,
+   "w": 322,
+   "h": 694
+  }
+ ],
+ "art": [],
+ "listening": [],
+ "voice_result": [
+  {
+   "kind": "tap",
+   "action": "undo",
+   "x": 588,
+   "y": 408,
+   "w": 90,
+   "h": 48
+  },
+  {
+   "kind": "tap",
+   "action": "done",
+   "x": 687,
+   "y": 408,
+   "w": 89,
+   "h": 48
+  }
+ ]
+}

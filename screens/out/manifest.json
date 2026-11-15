@@ -1,0 +1,599 @@
+{
+ "deck": [
+  "board",
+  "today",
+  "countdown",
+  "photo",
+  "note"
+ ],
+ "actions": {
+  "board": {
+   "open:approve": "approve",
+   "deny:s1": "board_denied",
+   "allow:s1": "board_allowed"
+  },
+  "approve": {
+   "back": "board",
+   "deny:s1": "board_denied",
+   "allow:s1": "board_allowed"
+  },
+  "photo": {
+   "heart": "photo_hearted",
+   "photo:next": "onthisday"
+  },
+  "photo_hearted": {
+   "photo:next": "onthisday"
+  },
+  "onthisday": {
+   "photo:next": "photo"
+  },
+  "note": {
+   "heart": "note_hearted",
+   "reply": "listening"
+  },
+  "reader_1": {
+   "page:next": "reader_2"
+  },
+  "reader_2": {
+   "page:prev": "reader_1"
+  },
+  "voice_result": {
+   "undo": "@back",
+   "done": "@back"
+  }
+ },
+ "holds": {
+  "allow:s1": {
+   "approve": [
+    "approve_h1",
+    "approve_h2",
+    "approve_h3"
+   ],
+   "ms": 1000
+  }
+ },
+ "scroll": {
+  "photo": {
+   "down": "onthisday",
+   "up": "onthisday"
+  },
+  "photo_hearted": {
+   "down": "onthisday",
+   "up": "onthisday"
+  },
+  "onthisday": {
+   "down": "photo",
+   "up": "photo"
+  },
+  "reader_1": {
+   "up": "reader_2",
+   "left": "reader_2"
+  },
+  "reader_2": {
+   "down": "reader_1",
+   "right": "reader_1"
+  }
+ },
+ "frames": {
+  "board": {
+   "img": "board.png",
+   "w": 800,
+   "h": 480,
+   "orient": "landscape",
+   "deck_as": "board",
+   "hotspots": [
+    {
+     "kind": "tap",
+     "action": "open:approve",
+     "x": 336,
+     "y": 90,
+     "w": 440,
+     "h": 184
+    },
+    {
+     "kind": "tap",
+     "action": "deny:s1",
+     "x": 352,
+     "y": 212,
+     "w": 88,
+     "h": 48
+    },
+    {
+     "kind": "hold",
+     "action": "allow:s1",
+     "x": 450,
+     "y": 212,
+     "w": 310,
+     "h": 48
+    },
+    {
+     "kind": "tap",
+     "action": "session:s2",
+     "x": 336,
+     "y": 280,
+     "w": 440,
+     "h": 60
+    },
+    {
+     "kind": "tap",
+     "action": "session:s3",
+     "x": 336,
+     "y": 340,
+     "w": 440,
+     "h": 60
+    },
+    {
+     "kind": "tap",
+     "action": "session:s4",
+     "x": 336,
+     "y": 400,
+     "w": 440,
+     "h": 59
+    }
+   ]
+  },
+  "board_allowed": {
+   "img": "board_allowed.png",
+   "w": 800,
+   "h": 480,
+   "orient": "landscape",
+   "deck_as": "board",
+   "hotspots": [
+    {
+     "kind": "tap",
+     "action": "session:s1",
+     "x": 336,
+     "y": 88,
+     "w": 440,
+     "h": 60
+    },
+    {
+     "kind": "tap",
+     "action": "session:s2",
+     "x": 336,
+     "y": 148,
+     "w": 440,
+     "h": 60
+    },
+    {
+     "kind": "tap",
+     "action": "session:s3",
+     "x": 336,
+     "y": 208,
+     "w": 440,
+     "h": 60
+    },
+    {
+     "kind": "tap",
+     "action": "session:s4",
+     "x": 336,
+     "y": 269,
+     "w": 440,
+     "h": 60
+    },
+    {
+     "kind": "tap",
+     "action": "session:s5",
+     "x": 336,
+     "y": 329,
+     "w": 440,
+     "h": 59
+    }
+   ]
+  },
+  "board_denied": {
+   "img": "board_denied.png",
+   "w": 800,
+   "h": 480,
+   "orient": "landscape",
+   "deck_as": "board",
+   "hotspots": [
+    {
+     "kind": "tap",
+     "action": "session:s1",
+     "x": 336,
+     "y": 88,
+     "w": 440,
+     "h": 60
+    },
+    {
+     "kind": "tap",
+     "action": "session:s2",
+     "x": 336,
+     "y": 148,
+     "w": 440,
+     "h": 60
+    },
+    {
+     "kind": "tap",
+     "action": "session:s3",
+     "x": 336,
+     "y": 208,
+     "w": 440,
+     "h": 60
+    },
+    {
+     "kind": "tap",
+     "action": "session:s4",
+     "x": 336,
+     "y": 269,
+     "w": 440,
+     "h": 60
+    },
+    {
+     "kind": "tap",
+     "action": "session:s5",
+     "x": 336,
+     "y": 329,
+     "w": 440,
+     "h": 59
+    }
+   ]
+  },
+  "approve": {
+   "img": "approve.png",
+   "w": 800,
+   "h": 480,
+   "orient": "landscape",
+   "deck_as": "board",
+   "hotspots": [
+    {
+     "kind": "tap",
+     "action": "back",
+     "x": 0,
+     "y": 0,
+     "w": 200,
+     "h": 44
+    },
+    {
+     "kind": "hold",
+     "action": "allow:s1",
+     "x": 533,
+     "y": 62,
+     "w": 236,
+     "h": 236
+    },
+    {
+     "kind": "tap",
+     "action": "deny:s1",
+     "x": 526,
+     "y": 406,
+     "w": 250,
+     "h": 52
+    }
+   ]
+  },
+  "approve_h1": {
+   "img": "approve_h1.png",
+   "w": 800,
+   "h": 480,
+   "orient": "landscape",
+   "deck_as": "board",
+   "hotspots": [
+    {
+     "kind": "tap",
+     "action": "back",
+     "x": 0,
+     "y": 0,
+     "w": 200,
+     "h": 44
+    },
+    {
+     "kind": "hold",
+     "action": "allow:s1",
+     "x": 533,
+     "y": 62,
+     "w": 236,
+     "h": 236
+    },
+    {
+     "kind": "tap",
+     "action": "deny:s1",
+     "x": 526,
+     "y": 406,
+     "w": 250,
+     "h": 52
+    }
+   ]
+  },
+  "approve_h2": {
+   "img": "approve_h2.png",
+   "w": 800,
+   "h": 480,
+   "orient": "landscape",
+   "deck_as": "board",
+   "hotspots": [
+    {
+     "kind": "tap",
+     "action": "back",
+     "x": 0,
+     "y": 0,
+     "w": 200,
+     "h": 44
+    },
+    {
+     "kind": "hold",
+     "action": "allow:s1",
+     "x": 533,
+     "y": 62,
+     "w": 236,
+     "h": 236
+    },
+    {
+     "kind": "tap",
+     "action": "deny:s1",
+     "x": 526,
+     "y": 406,
+     "w": 250,
+     "h": 52
+    }
+   ]
+  },
+  "approve_h3": {
+   "img": "approve_h3.png",
+   "w": 800,
+   "h": 480,
+   "orient": "landscape",
+   "deck_as": "board",
+   "hotspots": [
+    {
+     "kind": "tap",
+     "action": "back",
+     "x": 0,
+     "y": 0,
+     "w": 200,
+     "h": 44
+    },
+    {
+     "kind": "hold",
+     "action": "allow:s1",
+     "x": 533,
+     "y": 62,
+     "w": 236,
+     "h": 236
+    },
+    {
+     "kind": "tap",
+     "action": "deny:s1",
+     "x": 526,
+     "y": 406,
+     "w": 250,
+     "h": 52
+    }
+   ]
+  },
+  "today": {
+   "img": "today.png",
+   "w": 800,
+   "h": 480,
+   "orient": "landscape",
+   "deck_as": "today",
+   "hotspots": [
+    {
+     "kind": "tap",
+     "action": "event:0",
+     "x": 24,
+     "y": 322,
+     "w": 277,
+     "h": 98
+    }
+   ]
+  },
+  "countdown": {
+   "img": "countdown.png",
+   "w": 800,
+   "h": 480,
+   "orient": "landscape",
+   "deck_as": "countdown",
+   "hotspots": []
+  },
+  "photo": {
+   "img": "photo.png",
+   "w": 800,
+   "h": 480,
+   "orient": "landscape",
+   "deck_as": "photo",
+   "hotspots": [
+    {
+     "kind": "tap",
+     "action": "photo:next",
+     "x": 0,
+     "y": 0,
+     "w": 800,
+     "h": 480
+    },
+    {
+     "kind": "tap",
+     "action": "heart",
+     "x": 720,
+     "y": 400,
+     "w": 60,
+     "h": 60
+    }
+   ]
+  },
+  "photo_hearted": {
+   "img": "photo_hearted.png",
+   "w": 800,
+   "h": 480,
+   "orient": "landscape",
+   "deck_as": "photo",
+   "hotspots": [
+    {
+     "kind": "tap",
+     "action": "photo:next",
+     "x": 0,
+     "y": 0,
+     "w": 800,
+     "h": 480
+    },
+    {
+     "kind": "tap",
+     "action": "heart",
+     "x": 720,
+     "y": 400,
+     "w": 60,
+     "h": 60
+    }
+   ]
+  },
+  "onthisday": {
+   "img": "onthisday.png",
+   "w": 800,
+   "h": 480,
+   "orient": "landscape",
+   "deck_as": "photo",
+   "hotspots": [
+    {
+     "kind": "tap",
+     "action": "photo:next",
+     "x": 0,
+     "y": 0,
+     "w": 440,
+     "h": 480
+    }
+   ]
+  },
+  "note": {
+   "img": "note.png",
+   "w": 800,
+   "h": 480,
+   "orient": "landscape",
+   "deck_as": "note",
+   "hotspots": [
+    {
+     "kind": "tap",
+     "action": "heart",
+     "x": 526,
+     "y": 408,
+     "w": 148,
+     "h": 48
+    },
+    {
+     "kind": "tap",
+     "action": "reply",
+     "x": 684,
+     "y": 408,
+     "w": 92,
+     "h": 48
+    }
+   ]
+  },
+  "note_hearted": {
+   "img": "note_hearted.png",
+   "w": 800,
+   "h": 480,
+   "orient": "landscape",
+   "deck_as": "note",
+   "hotspots": [
+    {
+     "kind": "tap",
+     "action": "heart",
+     "x": 590,
+     "y": 408,
+     "w": 84,
+     "h": 48
+    },
+    {
+     "kind": "tap",
+     "action": "reply",
+     "x": 684,
+     "y": 408,
+     "w": 92,
+     "h": 48
+    }
+   ]
+  },
+  "reader_1": {
+   "img": "reader_1.png",
+   "w": 480,
+   "h": 800,
+   "orient": "portrait",
+   "deck_as": "reader_1",
+   "hotspots": [
+    {
+     "kind": "tap",
+     "action": "page:prev",
+     "x": 0,
+     "y": 46,
+     "w": 158,
+     "h": 694
+    },
+    {
+     "kind": "tap",
+     "action": "page:next",
+     "x": 158,
+     "y": 46,
+     "w": 322,
+     "h": 694
+    }
+   ]
+  },
+  "reader_2": {
+   "img": "reader_2.png",
+   "w": 480,
+   "h": 800,
+   "orient": "portrait",
+   "deck_as": "reader_2",
+   "hotspots": [
+    {
+     "kind": "tap",
+     "action": "page:prev",
+     "x": 0,
+     "y": 46,
+     "w": 158,
+     "h": 694
+    },
+    {
+     "kind": "tap",
+     "action": "page:next",
+     "x": 158,
+     "y": 46,
+     "w": 322,
+     "h": 694
+    }
+   ]
+  },
+  "art": {
+   "img": "art.png",
+   "w": 800,
+   "h": 480,
+   "orient": "landscape",
+   "deck_as": "art",
+   "hotspots": []
+  },
+  "listening": {
+   "img": "listening.png",
+   "w": 800,
+   "h": 480,
+   "orient": "landscape",
+   "deck_as": "listening",
+   "hotspots": []
+  },
+  "voice_result": {
+   "img": "voice_result.png",
+   "w": 800,
+   "h": 480,
+   "orient": "landscape",
+   "deck_as": "voice_result",
+   "hotspots": [
+    {
+     "kind": "tap",
+     "action": "undo",
+     "x": 588,
+     "y": 408,
+     "w": 90,
+     "h": 48
+    },
+    {
+     "kind": "tap",
+     "action": "done",
+     "x": 687,
+     "y": 408,
+     "w": 89,
+     "h": 48
+    }
+   ]
+  }
+ }
+}

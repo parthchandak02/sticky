@@ -1,0 +1,50 @@
+{% extends "_layout.html.j2" %}
+{% block style %}
+.tile { position:absolute; left:var(--m); top:64px; width:190px; height:190px; background:var(--ink); border-radius:8px; display:grid; place-items:center; }
+.listen { position:absolute; left:240px; top:56px; right:var(--m); }
+.listen .h { font-family:"News",serif; font-style:italic; font-size:76px; font-weight:400; line-height:1; letter-spacing:-0.02em; }
+.listen .t { font-family:"News",serif; font-size:48px; font-weight:500; margin-top:10px; }
+.listen .s { font-size:15px; font-weight:700; color:var(--graphite); margin-top:4px; }
+.modes { position:absolute; left:var(--m); right:var(--m); bottom:22px; display:grid; grid-template-columns:repeat(3,1fr); gap:var(--g); }
+.modes div { border-top:2px solid var(--ink); padding-top:8px; font-size:13px; font-weight:600; color:var(--graphite); }
+.modes b { display:block; font-family:"News",serif; font-size:22px; color:var(--ink); font-weight:600; }
+
+.kind { display:inline-flex; align-items:center; gap:8px; height:30px; padding:0 12px; border-radius:15px; background:var(--ink); color:var(--paper); font-size:13px; font-weight:700; }
+.res { position:absolute; left:var(--m); right:var(--m); top:58px; }
+.res .title { font-family:"News",serif; font-size:50px; font-weight:600; line-height:1.02; letter-spacing:-0.02em; margin-top:14px; max-width:620px; }
+.res ul { list-style:none; margin-top:16px; }
+.res li { display:flex; gap:12px; align-items:center; font-size:18px; font-weight:600; padding:7px 0; }
+.res li i { width:18px; height:18px; border:2px solid var(--ink); display:block; flex:none; }
+.heard { position:absolute; left:var(--m); bottom:28px; width:440px; font-family:"News",serif; font-style:italic; font-size:16px; color:var(--graphite); line-height:1.35; }
+.acts { position:absolute; right:var(--m); bottom:24px; display:flex; gap:10px; }
+.acts .btn { height:48px; }
+{% endblock %}
+{% block body %}
+{% set v = d.voice %}
+{% if mode == 'listening' %}
+<div class="tile">
+  <svg width="86" height="110" viewBox="0 0 86 110" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"><rect x="25" y="4" width="36" height="62" rx="18" fill="#fff"/><path d="M8 50a35 35 0 0 0 70 0M43 86v18M26 104h34"/></svg>
+</div>
+<div class="listen">
+  <div class="h">Listening</div>
+  <div class="t">{{ v.seconds }}</div>
+  <div class="s">Let go of the button to send</div>
+</div>
+<div class="modes">
+  <div><b>Note</b>Just talk</div>
+  <div><b>Task</b>Start with "task"</div>
+  <div><b>Ask Claude</b>Start with "ask"</div>
+</div>
+{% else %}
+<div class="res">
+  <span class="kind"><svg width="14" height="14" viewBox="0 0 16 16"><path d="M2 8.5l4 4 8-9" fill="none" stroke="#fff" stroke-width="2.8"/></svg>{{ v.kind }}</span>
+  <div class="title">{{ v.title }}</div>
+  <ul>{% for it in v.lines %}<li><i></i>{{ it }}</li>{% endfor %}</ul>
+</div>
+<div class="heard">&ldquo;{{ v.heard }}&rdquo;</div>
+<div class="acts">
+  <div class="btn line" data-tap="undo">Undo</div>
+  <div class="btn dark" data-tap="done">Done</div>
+</div>
+{% endif %}
+{% endblock %}

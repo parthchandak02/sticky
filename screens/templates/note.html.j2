@@ -1,0 +1,25 @@
+{% extends "_layout.html.j2" %}
+{% block style %}
+.q { position:absolute; left:16px; top:20px; font-family:"News",serif; font-size:300px; line-height:1; color:var(--pencil); font-weight:700; }
+.text { position:absolute; left:92px; right:60px; top:92px; font-family:"News",serif; font-style:italic; font-size:62px; line-height:1.08; font-weight:400; letter-spacing:-0.01em; }
+.sig { position:absolute; left:92px; bottom:34px; display:flex; align-items:flex-end; gap:14px; }
+.sig .who { font-family:"News",serif; font-style:italic; font-size:40px; font-weight:600; line-height:1; }
+.sig .when { font-size:13px; font-weight:700; color:var(--graphite); padding-bottom:5px; }
+.acts { position:absolute; right:var(--m); bottom:24px; display:flex; gap:10px; }
+.acts .btn { height:48px; }
+.pin { position:absolute; right:30px; top:18px; }
+{% endblock %}
+{% block body %}
+{% set n = d.note %}
+<div class="q">&ldquo;</div>
+<svg class="pin" width="34" height="34" viewBox="0 0 34 34" fill="none" stroke="#000" stroke-width="2.4" stroke-linejoin="round"><path d="M20 3l11 11-5 2-6 6 1 6-3 2-15-15 2-3 6 1 6-6z"/><path d="M10 24l-7 7"/></svg>
+<div class="text">{{ n.text }}</div>
+<div class="sig">
+  <svg width="46" height="40" viewBox="0 0 46 40"><path d="M23 36C10 27 3 20 4 12c1-7 9-10 14-6 3 2 5 5 5 7 1-5 6-10 12-9 6 1 8 8 5 14-3 6-10 12-17 18" fill="none" stroke="#000" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  <div class="who">{{ n.from }}</div><div class="when">Pinned {{ n.when }}</div>
+</div>
+<div class="acts">
+  <div class="btn line" data-tap="heart">{% if hearted %}Sent{% else %}Send a heart{% endif %}</div>
+  <div class="btn dark" data-tap="reply">Reply</div>
+</div>
+{% endblock %}

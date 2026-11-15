@@ -6,3 +6,9 @@ __pycache__/
 data/
 *.wav
 previews/
+cook/refs/
+cook/stills/
+cook/compare/
+node_modules/
+screens/out/html/
+screens/out/jobs.json

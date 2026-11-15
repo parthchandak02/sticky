@@ -1,0 +1,22 @@
+{% extends "_layout.html.j2" %}
+{% block style %}
+.ph { position:absolute; inset:0; image-rendering:pixelated; }
+.label { position:absolute; left:20px; bottom:20px; background:var(--paper); border:2px solid var(--ink); padding:10px 16px 10px 14px; }
+.label .place { font-family:"News",serif; font-style:italic; font-size:28px; font-weight:500; line-height:1.05; }
+.label .from { font-size:13px; font-weight:700; color:var(--graphite); margin-top:3px; display:flex; gap:10px; align-items:center; }
+.label .dots i { width:6px; height:6px; }
+.label .dots i.on { width:14px; }
+.heart { position:absolute; right:20px; bottom:20px; width:60px; height:60px; border-radius:50%; background:var(--paper); border:2px solid var(--ink); display:grid; place-items:center; }
+.heart.sent { background:var(--ink); }
+{% endblock %}
+{% block body %}
+<img class="ph" src="../img/photo_full.png" data-tap="photo:next">
+<div class="label">
+  <div class="place">Ubud, in the rain</div>
+  <div class="from"><span>From P, 2h ago</span><span class="dots">{% for i in range(deck_len) %}<i class="{{ 'on' if i == deck_idx }}"></i>{% endfor %}</span></div>
+</div>
+<div class="heart {{ 'sent' if hearted }}" data-tap="heart">
+  <svg width="30" height="28" viewBox="0 0 30 28"><path d="M15 26S2 18 2 9a6.5 6.5 0 0 1 13-1 6.5 6.5 0 0 1 13 1c0 9-13 17-13 17z" fill="{{ '#fff' if hearted else 'none' }}" stroke="{{ '#fff' if hearted else '#000' }}" stroke-width="2.6" stroke-linejoin="round"/></svg>
+</div>
+{% if toast %}<div class="toast" style="left:auto;right:92px;transform:none;bottom:28px">{{ toast }}</div>{% endif %}
+{% endblock %}

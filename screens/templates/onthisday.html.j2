@@ -1,0 +1,21 @@
+{% extends "_layout.html.j2" %}
+{% block style %}
+.ph { position:absolute; left:0; top:0; width:440px; height:480px; image-rendering:pixelated; }
+.col { position:absolute; left:468px; right:var(--m); top:22px; bottom:22px; display:flex; flex-direction:column; }
+.col .k { font-family:"News",serif; font-style:italic; font-size:26px; border-bottom:2px solid var(--ink); padding-bottom:8px; }
+.col .n { font-family:"News",serif; font-size:200px; font-weight:400; line-height:0.9; letter-spacing:-0.05em; margin-top:18px; }
+.col .u { font-family:"News",serif; font-size:30px; font-style:italic; margin-top:-4px; }
+.col .place { margin-top:auto; font-size:16px; font-weight:700; }
+.col .meta { font-size:13px; font-weight:600; color:var(--graphite); margin-top:2px; display:flex; justify-content:space-between; }
+.col .dots i { width:6px; height:6px; } .col .dots i.on { width:14px; }
+{% endblock %}
+{% block body %}
+<img class="ph" src="../img/photo_half.png" data-tap="photo:next">
+<div class="col">
+  <div class="k">On this day</div>
+  <div class="n">2</div>
+  <div class="u">years ago</div>
+  <div class="place">Ubud, Bali</div>
+  <div class="meta"><span>15 Nov 2024</span><span class="dots">{% for i in range(deck_len) %}<i class="{{ 'on' if i == deck_idx }}"></i>{% endfor %}</span></div>
+</div>
+{% endblock %}

@@ -1,0 +1,75 @@
+/* Sticky screens. One system for an 800x480, 4-level gray e-paper panel.
+   Only four tones exist on the glass: ink, graphite, pencil, paper.
+   Text is ink or graphite; pencil is for fills, rules and texture only. */
+
+@font-face { font-family: "News"; src: url("../../assets/fonts/Newsreader-VF.ttf"); font-weight: 200 800; font-style: normal; }
+@font-face { font-family: "News"; src: url("../../assets/fonts/Newsreader-Italic-VF.ttf"); font-weight: 200 800; font-style: italic; }
+@font-face { font-family: "Sans"; src: url("../../assets/fonts/Inter-400.ttf"); font-weight: 400; }
+@font-face { font-family: "Sans"; src: url("../../assets/fonts/Inter-600.ttf"); font-weight: 600; }
+@font-face { font-family: "Sans"; src: url("../../assets/fonts/Inter-700.ttf"); font-weight: 700; }
+@font-face { font-family: "Code"; src: url("../../assets/fonts/JetBrainsMono-500.ttf"); font-weight: 500; }
+
+:root {
+  --ink: #000;
+  --graphite: #555;
+  --pencil: #aaa;
+  --paper: #fff;
+  --m: 24px;            /* outer margin */
+  --g: 16px;            /* gutter */
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--paper); color: var(--ink); }
+body {
+  width: var(--w, 800px); height: var(--h, 480px); overflow: hidden; position: relative;
+  font-family: "Sans", sans-serif; font-size: 15px; line-height: 1.3;
+  -webkit-font-smoothing: antialiased; text-rendering: geometricPrecision;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+.serif { font-family: "News", serif; font-optical-sizing: auto; }
+.it { font-style: italic; }
+.ink { color: var(--ink); } .graphite { color: var(--graphite); }
+.num { font-family: "News", serif; font-variant-numeric: lining-nums proportional-nums; letter-spacing: -0.02em; }
+
+/* Folio: the running line at the top of every landscape screen */
+.folio {
+  position: absolute; left: var(--m); right: var(--m); top: 0; height: 40px;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 2px solid var(--ink);
+}
+.folio .title { font-family: "News", serif; font-style: italic; font-size: 21px; font-weight: 500; }
+.folio .fr { display: flex; align-items: center; gap: 14px; font-size: 14px; font-weight: 600; }
+.dots { display: flex; gap: 6px; align-items: center; }
+.dots i { width: 7px; height: 7px; border: 1.5px solid var(--ink); display: block; }
+.dots i.on { background: var(--ink); width: 18px; }
+.batt { display: inline-flex; align-items: center; gap: 5px; }
+.batt b { width: 22px; height: 11px; border: 1.5px solid var(--ink); position: relative; display: block; }
+.batt b::after { content: ""; position: absolute; right: -4px; top: 2.5px; width: 2px; height: 4px; background: var(--ink); }
+.batt b span { position: absolute; left: 1.5px; top: 1.5px; bottom: 1.5px; background: var(--ink); }
+
+/* Texture: printed halftone and hatching in pencil or ink */
+.halftone { background-image: radial-gradient(var(--ink) 0.9px, transparent 1.25px); background-size: 4px 4px; }
+.hatch { background-image: repeating-linear-gradient(-45deg, var(--ink) 0 1px, transparent 1px 5px); }
+.hatch-light { background-image: repeating-linear-gradient(-45deg, var(--pencil) 0 1.5px, transparent 1.5px 4px); }
+
+/* Buttons: one pair, ink and paper */
+.btn {
+  height: 52px; padding: 0 22px; display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  font-weight: 700; font-size: 16px; border: 2px solid currentColor; border-radius: 26px; white-space: nowrap;
+}
+.btn.fill { background: var(--paper); color: var(--ink); border-color: var(--paper); }
+.btn.ghost { color: var(--paper); }
+.btn.dark { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.btn.line { color: var(--ink); }
+
+.rule { height: 2px; background: var(--ink); }
+.hair { height: 1px; background: var(--pencil); }
+
+/* Toast: a printed slip at the bottom edge */
+.toast {
+  position: absolute; left: 50%; bottom: 18px; transform: translateX(-50%);
+  background: var(--ink); color: var(--paper); height: 44px; padding: 0 20px 0 14px; border-radius: 22px;
+  display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 15px; white-space: nowrap;
+}
+.toast .ok { width: 22px; height: 22px; border-radius: 50%; background: var(--paper); display: grid; place-items: center; }
