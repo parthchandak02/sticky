@@ -1,22 +1,22 @@
 {% extends "_layout.html.j2" %}
 {% block style %}
-.head { position:absolute; left:32px; right:32px; top:0; height:46px; display:flex; justify-content:space-between; align-items:center; border-bottom:1.5px solid var(--ink); }
+.head { position:absolute; left:40px; right:40px; top:0; height:46px; display:flex; justify-content:space-between; align-items:center; border-bottom:1.5px solid var(--ink); }
 .head .book { font-family:"News",serif; font-style:italic; font-size:19px; }
-.head .ch { font-size:13px; font-weight:700; color:var(--graphite); }
-.body { position:absolute; left:32px; right:32px; top:64px; height:640px; overflow:hidden;
-  font-family:"News",serif; font-size:21px; line-height:1.45; text-align:justify; hyphens:auto; font-variation-settings:"opsz" 12; }
+.head .ch { font-size:15px; font-weight:700; color:var(--graphite); }
+.body { position:absolute; left:40px; right:40px; top:66px; height:630px; overflow:hidden;
+  font-family:"News",serif; font-size:20px; line-height:30px; text-align:justify; hyphens:auto; text-wrap:pretty; word-spacing:-0.02em; font-variation-settings:"opsz" 12; }
 .body p { text-indent:1.3em; }
 .body p.first { text-indent:0; }
-.body p.first::first-letter { float:left; font-size:92px; line-height:0.82; font-weight:600; padding:6px 8px 0 0; }
-.body .chapter { font-family:"News",serif; font-size:40px; font-weight:600; letter-spacing:-0.01em; margin-bottom:14px; text-indent:0; line-height:1.05; }
-.foot { position:absolute; left:32px; right:32px; bottom:24px; }
-.foot .bar { height:4px; background:var(--pencil); position:relative; }
+.body p.first::first-letter { float:left; font-size:86px; line-height:76px; font-weight:600; padding:4px 8px 0 0; margin-bottom:-6px; }
+.body .chapter { font-family:"News",serif; font-size:40px; font-weight:600; letter-spacing:-0.01em; margin-bottom:30px; text-indent:0; line-height:60px; height:60px; }
+.foot { position:absolute; left:40px; right:40px; bottom:24px; }
+.foot .bar { height:4px; border-radius:2px; background:var(--pencil); position:relative; }
 .foot .bar i { position:absolute; left:0; top:-1px; bottom:-1px; background:var(--ink); }
-.foot .meta { display:flex; justify-content:space-between; font-size:13px; font-weight:700; color:var(--graphite); margin-top:8px; }
+.foot .meta { display:flex; justify-content:space-between; font-size:15px; font-weight:700; color:var(--graphite); margin-top:8px; }
 .zone { position:absolute; top:46px; bottom:60px; }
 {% endblock %}
 {% block body %}
-<div class="head"><span class="book">Walden</span><span class="ch">Economy</span></div>
+<div class="head"><span class="book">Walden</span><span class="ch">{{ "Henry David Thoreau" if page == 1 else "Economy" }}</span></div>
 <div class="body" lang="en">
 {% if page == 1 %}
 <div class="chapter">Economy</div>

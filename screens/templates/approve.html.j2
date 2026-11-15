@@ -6,20 +6,20 @@
 .wants { font-family:"News",serif; font-style:italic; font-size:26px; color:var(--graphite); margin-top:6px; }
 .cmdbox { margin-top:20px; position:relative; }
 .cmdbox .shadow { position:absolute; left:8px; top:8px; right:-8px; bottom:-8px; }
-.cmdbox .inner { position:relative; background:var(--paper); border:2px solid var(--ink); padding:14px 16px; }
-.cmdbox .tool { font-size:13px; font-weight:700; display:flex; justify-content:space-between; }
+.cmdbox .inner { position:relative; background:var(--paper); border:3px solid var(--ink); padding:14px 16px; }
+.cmdbox .tool { font-size:15px; font-weight:700; display:flex; justify-content:space-between; }
 .cmdbox code { display:block; font-family:"Code"; font-size:22px; margin-top:6px; line-height:1.25; }
-.facts { display:flex; gap:26px; margin-top:28px; }
-.facts div { font-size:13px; font-weight:600; color:var(--graphite); }
-.facts b { display:block; font-family:"News",serif; font-size:21px; color:var(--ink); font-weight:600; margin-top:1px; }
+.facts { position:absolute; left:var(--m); bottom:26px; display:flex; gap:34px; border-top:2px solid var(--ink); padding-top:10px; width:440px; }
+.facts div { font-size:15px; font-weight:600; color:var(--graphite); }
+.facts b { display:block; font-family:"News",serif; font-size:26px; color:var(--ink); font-weight:600; margin-top:1px; }
 
-.side { position:absolute; right:var(--m); top:62px; width:250px; bottom:22px; display:flex; flex-direction:column; align-items:center; }
+.side { position:absolute; right:var(--m); top:66px; width:250px; bottom:22px; display:flex; flex-direction:column; align-items:center; }
 .dial { width:236px; height:236px; position:relative; display:grid; place-items:center; }
 .dial svg { position:absolute; inset:0; }
 .dial .face { width:168px; height:168px; border-radius:50%; background:var(--ink); color:var(--paper); display:flex; flex-direction:column; align-items:center; justify-content:center; }
 .dial .face b { font-family:"News",serif; font-size:46px; font-weight:500; line-height:1; }
-.dial .face span { font-size:14px; font-weight:700; margin-top:4px; }
-.deny { margin-top:auto; width:100%; }
+.dial .face span { font-size:18px; font-weight:700; margin-top:4px; }
+.deny { margin-top:16px; width:200px; }
 .done .face { background:var(--paper); color:var(--ink); border:3px solid var(--ink); }
 {% endblock %}
 {% block body %}
@@ -28,24 +28,22 @@
 <section class="main">
   <div class="proj">{{ s.project }}</div>
   <div class="wants">wants to run</div>
-  <div class="cmdbox"><div class="shadow hatch"></div>
+  <div class="cmdbox">
     <div class="inner"><div class="tool"><span>{{ s.tool }}</span><span class="graphite">~/apps/{{ s.project }}</span></div><code>{{ s.command }}</code></div>
   </div>
+</section>
   <div class="facts">
     <div>Machine<b>{{ s.host }}</b></div>
     <div>Asked<b>{{ s.ago }} ago</b></div>
     <div>Session<b>4h 10m</b></div>
   </div>
-</section>
 <section class="side">
   {% set p = progress|default(0) %}
   <div class="dial {{ 'done' if p >= 24 }}" data-hold="allow:s1">
     <svg viewBox="0 0 236 236">
-      {% for i in range(24) %}
-        {% set a = (i * 15 - 90) * 0.0174533 %}
-        <line x1="{{ 118 + 100 * a|cos }}" y1="{{ 118 + 100 * a|sin }}" x2="{{ 118 + 114 * a|cos }}" y2="{{ 118 + 114 * a|sin }}"
-              stroke="{{ '#000' if i < p else '#aaa' }}" stroke-width="{{ 7 if i < p else 4 }}" stroke-linecap="butt"/>
-      {% endfor %}
+      {% set C = 2 * 3.14159 * 106 %}
+      <circle cx="118" cy="118" r="106" fill="none" stroke="#aaa" stroke-width="5" stroke-dasharray="{{ C / 48 - 3 }} 3"/>
+      {% if p > 0 %}<circle cx="118" cy="118" r="106" fill="none" stroke="#000" stroke-width="14" stroke-dasharray="{{ C * p / 24 }} {{ C }}" transform="rotate(-90 118 118)"/>{% endif %}
     </svg>
     <div class="face">{% if p >= 24 %}<b>Allowed</b>{% else %}<b>Hold</b><span>to allow</span>{% endif %}</div>
   </div>

@@ -1,40 +1,40 @@
 {% extends "_layout.html.j2" %}
 {% block style %}
-.big { position:absolute; left:12px; top:64px; font-family:"News",serif; font-weight:400; font-size:286px; line-height:1; letter-spacing:-0.06em; font-variation-settings:"opsz" 72; }
-.what { position:absolute; left:var(--m); top:376px; font-family:"News",serif; font-style:italic; font-size:34px; font-weight:400; }
+.big { position:absolute; left:16px; top:52px; font-family:"News",serif; font-weight:500; font-size:290px; line-height:1; letter-spacing:-0.06em; font-variation-settings:"opsz" 40; }
+.what { position:absolute; left:var(--m); top:300px; font-family:"News",serif; font-style:italic; font-size:34px; font-weight:400; }
+.what span { display:block; font-family:"Sans"; font-style:normal; font-size:16px; font-weight:600; color:var(--graphite); margin-top:6px; }
 .cal { position:absolute; right:var(--m); top:58px; width:300px; }
 .cal .m { font-family:"News",serif; font-size:26px; font-weight:600; display:flex; justify-content:space-between; align-items:baseline; border-bottom:2px solid var(--ink); padding-bottom:6px; }
 .cal .m span { font-family:"Sans"; font-size:13px; color:var(--graphite); font-weight:600; }
 .grid { display:grid; grid-template-columns:repeat(7, 1fr); margin-top:8px; row-gap:2px; }
-.grid .h { font-size:12px; font-weight:700; color:var(--graphite); text-align:center; padding-bottom:4px; }
-.grid .c { height:30px; display:grid; place-items:center; font-family:"News",serif; font-size:18px; position:relative; }
-.grid .c.we { color:var(--graphite); }
-.grid .c.hit { font-weight:700; }
+.grid .h { font-size:14px; font-weight:700; color:var(--graphite); text-align:center; padding-bottom:4px; }
+.grid .c { height:30px; display:grid; place-items:center; font-family:"News",serif; font-size:19px; font-weight:500; position:relative; }
+.grid .c.we { color:var(--ink); font-style:italic; }
+.grid .c.hit { font-weight:700; color:var(--paper); z-index:1; }
+.grid .c.hit::before { content:""; position:absolute; left:50%; top:50%; width:34px; height:34px; margin:-17px 0 0 -17px; background:var(--ink); border-radius:50%; z-index:-1; }
 .grid .c.hit svg { position:absolute; left:-6px; top:-7px; }
 .soon { position:absolute; right:var(--m); width:300px; bottom:20px; }
 .soon .r { padding:9px 0 8px; border-top:1px solid var(--pencil); }
 .soon .r:first-child { border-top:2px solid var(--ink); }
 .soon .t { display:flex; justify-content:space-between; align-items:baseline; }
-.soon .t b { font-size:15px; font-weight:700; }
+.soon .t b { font-size:17px; font-weight:700; }
 .soon .t span { font-family:"News",serif; font-size:24px; font-weight:600; }
 .soon .t span i { font-size:15px; font-style:italic; font-weight:400; margin-left:3px; }
-.soon .bar { height:6px; margin-top:5px; display:flex; gap:2px; }
-.soon .bar i { flex:1; background:var(--pencil); }
-.soon .bar i.on { background:var(--ink); }
+.soon .bar { height:6px; margin-top:6px; background:var(--pencil); position:relative; }
+.soon .bar i { position:absolute; left:0; top:0; bottom:0; background:var(--ink); }
 {% endblock %}
 {% block body %}
 {% set c = d.countdown %}
 <div class="big">{{ c.days }}</div>
-<div class="what">{{ c.what }}</div>
+<div class="what">{{ c.what }}<span>Friday, 1 January</span></div>
 <div class="cal">
-  <div class="m">{{ c.month }}<span>Fri 1</span></div>
+  <div class="m">{{ c.month }}</div>
   <div class="grid">
     {% for h in ['M','T','W','T','F','S','S'] %}<div class="h">{{ h }}</div>{% endfor %}
     {% for i in range(c.first_weekday) %}<div class="c"></div>{% endfor %}
     {% for day in range(1, c.month_days + 1) %}
       {% set wd = (c.first_weekday + day - 1) % 7 %}
       <div class="c {{ 'we' if wd >= 5 }} {{ 'hit' if day == c.day }}">{{ day }}
-        {% if day == c.day %}<svg width="54" height="44" viewBox="0 0 54 44"><path d="M8 24c-2-11 12-18 25-17s18 9 15 18-17 14-29 11S4 25 13 12" fill="none" stroke="#000" stroke-width="2.6" stroke-linecap="round"/></svg>{% endif %}
       </div>
     {% endfor %}
   </div>
@@ -42,7 +42,7 @@
 <div class="soon">
   {% for n in c.next %}
   <div class="r"><div class="t"><b>{{ n.name }}</b><span>{{ n.days }}<i>days</i></span></div>
-    <div class="bar">{% for i in range(n.span) %}<i class="{{ 'on' if i >= n.days }}"></i>{% endfor %}</div></div>
+    <div class="bar"><i style="width:{{ ((n.span - n.days) / n.span * 100)|round }}%"></i></div></div>
   {% endfor %}
 </div>
 {% endblock %}

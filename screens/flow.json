@@ -1,47 +1,223 @@
 {
-  "deck": ["board", "today", "countdown", "photo", "note"],
-  "frames": {
-    "board":         {"template": "board",     "title": "The Board"},
-    "board_allowed": {"template": "board",     "title": "The Board", "deck_as": "board",
-                      "set": {"toast": "Allowed, tandem is deploying"},
-                      "patch_sessions": {"s1": {"state": "working", "doing": "Running npm run deploy", "ago": "now"}}},
-    "board_denied":  {"template": "board",     "title": "The Board", "deck_as": "board",
-                      "set": {"toast": "Denied, tandem was told no"},
-                      "patch_sessions": {"s1": {"state": "idle", "doing": "Stopped, you denied deploy", "ago": "now"}}},
-    "approve":       {"template": "approve",   "title": "Permission", "deck_as": "board", "set": {"progress": 0}},
-    "approve_h1":    {"template": "approve",   "title": "Permission", "deck_as": "board", "set": {"progress": 8}},
-    "approve_h2":    {"template": "approve",   "title": "Permission", "deck_as": "board", "set": {"progress": 16}},
-    "approve_h3":    {"template": "approve",   "title": "Permission", "deck_as": "board", "set": {"progress": 24}},
-    "today":         {"template": "today",     "title": "Today"},
-    "countdown":     {"template": "countdown", "title": "Counting down"},
-    "photo":         {"template": "photo",     "set": {"folio": false}},
-    "photo_hearted": {"template": "photo",     "deck_as": "photo", "set": {"folio": false, "hearted": true, "toast": "Heart sent"}},
-    "onthisday":     {"template": "onthisday", "deck_as": "photo", "set": {"folio": false}},
-    "note":          {"template": "note",      "set": {"folio": false}},
-    "note_hearted":  {"template": "note",      "deck_as": "note", "set": {"folio": false, "hearted": true}},
-    "reader_1":      {"template": "reader",    "orient": "portrait", "set": {"folio": false, "page": 1}},
-    "reader_2":      {"template": "reader",    "orient": "portrait", "set": {"folio": false, "page": 2}},
-    "art":           {"template": "art",       "set": {"folio": false}},
-    "listening":     {"template": "voice",     "set": {"folio": false, "mode": "listening"}},
-    "voice_result":  {"template": "voice",     "title": "Voice note", "set": {"mode": "result"}}
+ "deck": [
+  "board",
+  "today",
+  "countdown",
+  "photo",
+  "note"
+ ],
+ "frames": {
+  "board": {
+   "template": "board",
+   "title": "The Board"
   },
-  "actions": {
-    "board":         {"open:approve": "approve", "deny:s1": "board_denied", "allow:s1": "board_allowed"},
-    "approve":       {"back": "board", "deny:s1": "board_denied", "allow:s1": "board_allowed"},
-    "photo":         {"heart": "photo_hearted", "photo:next": "onthisday"},
-    "photo_hearted": {"photo:next": "onthisday"},
-    "onthisday":     {"photo:next": "photo"},
-    "note":          {"heart": "note_hearted", "reply": "listening"},
-    "reader_1":      {"page:next": "reader_2"},
-    "reader_2":      {"page:prev": "reader_1"},
-    "voice_result":  {"undo": "@back", "done": "@back"}
+  "board_allowed": {
+   "template": "board",
+   "title": "The Board",
+   "deck_as": "board",
+   "set": {
+    "toast": "Allowed, tandem is deploying"
+   },
+   "patch_sessions": {
+    "s1": {
+     "state": "working",
+     "doing": "Running npm run deploy",
+     "ago": "now"
+    }
+   }
   },
-  "holds": {
-    "allow:s1": {"approve": ["approve_h1", "approve_h2", "approve_h3"], "ms": 1000}
+  "board_denied": {
+   "template": "board",
+   "title": "The Board",
+   "deck_as": "board",
+   "set": {
+    "toast": "Denied, tandem was told no"
+   },
+   "patch_sessions": {
+    "s1": {
+     "state": "idle",
+     "doing": "Stopped, you denied deploy",
+     "ago": "now"
+    }
+   }
   },
-  "scroll": {
-    "photo": {"down": "onthisday", "up": "onthisday"}, "photo_hearted": {"down": "onthisday", "up": "onthisday"},
-    "onthisday": {"down": "photo", "up": "photo"},
-    "reader_1": {"up": "reader_2", "left": "reader_2"}, "reader_2": {"down": "reader_1", "right": "reader_1"}
+  "approve": {
+   "template": "approve",
+   "title": "Permission",
+   "deck_as": "board",
+   "set": {
+    "progress": 0
+   }
+  },
+  "approve_h1": {
+   "template": "approve",
+   "title": "Permission",
+   "deck_as": "board",
+   "set": {
+    "progress": 8
+   }
+  },
+  "approve_h2": {
+   "template": "approve",
+   "title": "Permission",
+   "deck_as": "board",
+   "set": {
+    "progress": 16
+   }
+  },
+  "approve_h3": {
+   "template": "approve",
+   "title": "Permission",
+   "deck_as": "board",
+   "set": {
+    "progress": 24
+   }
+  },
+  "today": {
+   "template": "today",
+   "title": "Today"
+  },
+  "countdown": {
+   "template": "countdown",
+   "title": "Counting down"
+  },
+  "photo": {
+   "template": "photo",
+   "set": {
+    "folio": false
+   }
+  },
+  "photo_hearted": {
+   "template": "photo",
+   "deck_as": "photo",
+   "set": {
+    "folio": false,
+    "hearted": true
+   }
+  },
+  "onthisday": {
+   "template": "onthisday",
+   "deck_as": "photo",
+   "set": {
+    "folio": false
+   }
+  },
+  "note": {
+   "template": "note",
+   "set": {},
+   "title": "On the fridge"
+  },
+  "note_hearted": {
+   "template": "note",
+   "deck_as": "note",
+   "set": {
+    "hearted": true
+   },
+   "title": "On the fridge"
+  },
+  "reader_1": {
+   "template": "reader",
+   "orient": "portrait",
+   "set": {
+    "folio": false,
+    "page": 1
+   }
+  },
+  "reader_2": {
+   "template": "reader",
+   "orient": "portrait",
+   "set": {
+    "folio": false,
+    "page": 2
+   }
+  },
+  "art": {
+   "template": "art",
+   "set": {
+    "folio": false
+   }
+  },
+  "listening": {
+   "template": "voice",
+   "set": {
+    "mode": "listening"
+   },
+   "title": "Voice"
+  },
+  "voice_result": {
+   "template": "voice",
+   "title": "Voice note",
+   "set": {
+    "mode": "result"
+   }
   }
+ },
+ "actions": {
+  "board": {
+   "open:approve": "approve",
+   "deny:s1": "board_denied",
+   "allow:s1": "board_allowed"
+  },
+  "approve": {
+   "back": "board",
+   "deny:s1": "board_denied",
+   "allow:s1": "board_allowed"
+  },
+  "photo": {
+   "heart": "photo_hearted",
+   "photo:next": "onthisday"
+  },
+  "photo_hearted": {
+   "photo:next": "onthisday"
+  },
+  "onthisday": {
+   "photo:next": "photo"
+  },
+  "note": {
+   "heart": "note_hearted",
+   "reply": "listening"
+  },
+  "reader_1": {
+   "page:next": "reader_2"
+  },
+  "reader_2": {
+   "page:prev": "reader_1"
+  },
+  "voice_result": {
+   "undo": "@back",
+   "done": "@back"
+  }
+ },
+ "holds": {
+  "allow:s1": {
+   "approve": [
+    "approve_h1",
+    "approve_h2",
+    "approve_h3"
+   ],
+   "ms": 1000
+  }
+ },
+ "scroll": {
+  "photo": {
+   "down": "onthisday",
+   "up": "onthisday"
+  },
+  "photo_hearted": {
+   "down": "onthisday",
+   "up": "onthisday"
+  },
+  "onthisday": {
+   "down": "photo",
+   "up": "photo"
+  },
+  "reader_1": {
+   "up": "reader_2",
+   "left": "reader_2"
+  },
+  "reader_2": {
+   "down": "reader_1",
+   "right": "reader_1"
+  }
+ }
 }

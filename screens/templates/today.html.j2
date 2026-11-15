@@ -6,30 +6,30 @@
 .wx { position:absolute; right:var(--m); top:56px; display:flex; gap:16px; align-items:flex-start; }
 .wx .t { font-family:"News",serif; font-size:84px; font-weight:500; line-height:0.85; letter-spacing:-0.03em; }
 .wx .t sup { font-size:40px; vertical-align:top; }
-.wx .info { font-size:14px; font-weight:600; color:var(--graphite); line-height:1.5; margin-top:2px; }
-.wx .info b { color:var(--ink); font-size:16px; display:block; }
+.wx .info { font-size:15px; font-weight:600; color:var(--graphite); line-height:1.5; margin-top:2px; }
+.wx .info b { color:var(--ink); font-size:18px; display:block; }
 
 .line { position:absolute; left:var(--m); right:var(--m); top:196px; height:104px; }
 .line .axis { position:absolute; left:0; right:0; top:62px; height:2px; background:var(--ink); }
 .line .past { position:absolute; left:0; top:40px; height:44px; }
 .ev { position:absolute; top:40px; height:44px; border:2px solid var(--ink); background:var(--paper); }
-.lab { position:absolute; top:12px; font-size:13px; font-weight:700; white-space:nowrap; }
+.lab { position:absolute; top:12px; font-size:15px; font-weight:700; white-space:nowrap; }
 .lab.done { color:var(--graphite); }
-.ev.done { border-color:var(--graphite); background:var(--pencil); }
+.ev.done { border-color:var(--graphite); background:var(--paper); }
 
 .ev.next { background:var(--ink); color:var(--paper); }
 
-.hr { position:absolute; top:92px; font-size:12px; font-weight:600; color:var(--graphite); transform:translateX(-50%); }
+.hr { position:absolute; top:92px; font-size:14px; font-weight:700; color:var(--ink); transform:translateX(-50%); }
 .tick { position:absolute; top:86px; width:1.5px; height:5px; background:var(--ink); }
 .now { position:absolute; top:30px; bottom:18px; width:3px; background:var(--ink); }
 .now::before { content:""; position:absolute; left:-6px; top:-6px; border:7.5px solid transparent; border-top:9px solid var(--ink); }
 
-.upnext { position:absolute; left:var(--m); right:var(--m); top:322px; display:grid; grid-template-columns:1.25fr 1fr 1fr; gap:var(--g); }
+.upnext { position:absolute; left:var(--m); right:var(--m); top:330px; display:grid; grid-template-columns:1.25fr 1fr 1fr; gap:var(--g); }
 .card { border-top:2px solid var(--ink); padding-top:10px; }
 .card .when { font-family:"News",serif; font-size:40px; font-weight:500; line-height:1; letter-spacing:-0.02em; }
 .card .when i { font-size:20px; font-style:italic; margin-left:4px; }
-.card .what { font-size:16px; font-weight:700; margin-top:6px; }
-.card .sub { font-size:13px; font-weight:600; color:var(--graphite); margin-top:2px; }
+.card .what { font-size:18px; font-weight:700; margin-top:6px; }
+.card .sub { font-size:15px; font-weight:600; color:var(--graphite); margin-top:2px; }
 .room { position:absolute; left:var(--m); right:var(--m); bottom:16px; display:flex; justify-content:space-between; font-size:13px; font-weight:600; color:var(--graphite); border-top:1px solid var(--pencil); padding-top:8px; }
 .room b { color:var(--ink); }
 {% endblock %}
@@ -37,25 +37,18 @@
 {% set t = d.today %}
 <div class="mast"><div class="day">{{ t.day }}</div><div class="date">{{ t.date }}</div></div>
 <div class="wx">
-  <svg width="74" height="74" viewBox="0 0 74 74" fill="none" stroke="#000" stroke-width="3" stroke-linecap="round">
-    <circle cx="27" cy="25" r="11"/>
-    <path d="M27 6v4M10 25H6M14 12l-3-3M40 12l3-3" />
-    <path d="M22 50h34a11 11 0 0 0 0-22 15 15 0 0 0-28 5 9 9 0 0 0-6 17z" fill="#fff"/>
-    <path d="M28 58l-3 7M40 58l-3 7M52 58l-3 7" />
-  </svg>
   <div class="t">{{ t.temp }}<sup>°</sup></div>
-  <div class="info"><b>{{ t.sky }}</b>High {{ t.hi }}°, low {{ t.lo }}°</div>
+  <div class="info"><b>{{ t.sky }}</b>High {{ t.hi }}°, low {{ t.lo }}°<br>Inside {{ t.inside }}, {{ t.humidity }}</div>
 </div>
 
 {% set h0, h1 = 7, 23 %}
 {% macro x(h) %}{{ ((h - h0) / (h1 - h0) * 752)|round(1) }}{% endmacro %}
 <div class="line">
-  <div class="past hatch-light" style="width:{{ x(t.now_h) }}px"></div>
   <div class="axis"></div>
   {% set nxt = t.events|selectattr('end','gt',t.now_h)|first %}
   {% for e in t.events %}
     {% set state = 'done' if e.end <= t.now_h else ('next' if e == nxt else '') %}
-    <div class="ev {{ state }}" style="left:{{ x(e.start) }}px;width:{{ ((e.end - e.start) / (h1 - h0) * 752)|round(1) }}px"></div><div class="lab {{ state }}" style="left:{{ x(e.start) }}px">{{ e.title.split(",")[0] }}</div>
+    <div class="ev {{ state }}" style="left:{{ x(e.start) }}px;width:{{ ((e.end - e.start) / (h1 - h0) * 752)|round(1) }}px"></div><div class="lab {{ state }}" style="left:{{ x(e.start) }}px">{{ e.title.split(",")[0] if state != "done" else e.title.split(" ")[0].split(",")[0] }}</div>
   {% endfor %}
   {% for hh in range(h0, h1 + 1) %}<div class="tick" style="left:{{ x(hh) }}px"></div>{% if hh % 3 == 1 %}<div class="hr" style="left:{{ x(hh) }}px">{{ hh }}</div>{% endif %}{% endfor %}
   <div class="now" style="left:{{ x(t.now_h) }}px"></div>
@@ -69,5 +62,4 @@
   <div class="card"><div class="when">Mon<i>9:30</i></div><div class="what">Dentist</div><div class="sub">Market St</div></div>
   <div class="card"><div class="when">Tue<i>all day</i></div><div class="what">Jobwright launch</div><div class="sub">3 tasks left</div></div>
 </div>
-<div class="room"><span>Inside <b>{{ t.inside }}</b> and <b>{{ t.humidity }}</b> humid</span><span>Updated {{ d.now }}</span></div>
 {% endblock %}

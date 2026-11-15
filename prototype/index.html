@@ -20,14 +20,14 @@ html, body { height: 100%; background: radial-gradient(120% 90% at 50% 40%, #eef
   box-shadow: 0 1px 0 #fff inset, 0 -2px 0 rgba(0,0,0,.05) inset, 0 40px 60px -30px rgba(20,25,35,.45), 0 12px 24px -12px rgba(20,25,35,.35), 0 0 0 1px rgba(0,0,0,.06);
   transition: transform 700ms cubic-bezier(.6,0,.2,1); }
 .device.portrait { transform: rotate(-90deg); }
-.glass { position: absolute; left: 91px; top: 64px; width: 800px; height: 480px; overflow: hidden; background: #f4f4f1;
+.glass { position: absolute; left: 91px; top: 64px; width: 800px; height: 480px; overflow: hidden; background: #fff;
   box-shadow: 0 0 0 2px #d9d9d5, 0 0 0 3px #c9c9c4, inset 0 1px 3px rgba(0,0,0,.18); border-radius: 3px; }
 .glass img { position: absolute; left: 0; top: 0; width: 800px; height: 480px; image-rendering: auto; user-select: none; -webkit-user-drag: none;
-  filter: contrast(.92) brightness(.97) sepia(.04); mix-blend-mode: multiply; }
+  filter: none; }
 .glass img.portrait { width: 480px; height: 800px; left: 160px; top: -160px; transform: rotate(90deg); }
 .glass .ghost { opacity: 0; }
 .glass .flash { position: absolute; inset: 0; background: #111; opacity: 0; pointer-events: none; }
-.glass .sheen { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(115deg, rgba(255,255,255,.22) 0%, rgba(255,255,255,0) 38%); }
+.glass .sheen { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(115deg, rgba(255,255,255,.10) 0%, rgba(255,255,255,0) 30%); }
 
 /* Buttons on the top edge: AI voice, page up, page down */
 .keys { position: absolute; top: -9px; right: 120px; display: flex; gap: 18px; }
@@ -53,15 +53,20 @@ html, body { height: 100%; background: radial-gradient(120% 90% at 50% 40%, #eef
 .panel li { display: grid; grid-template-columns: 66px 1fr; gap: 8px; font-size: 13px; padding: 7px 0; border-top: 1px solid rgba(0,0,0,.09); }
 .panel li b { font-weight: 600; }
 .panel li span { color: var(--soft); }
-.ctrl { position: absolute; right: 28px; top: 24px; display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
-.ctrl button { font: 600 13px "Sans", system-ui; height: 36px; padding: 0 14px; border-radius: 18px; border: 1px solid rgba(0,0,0,.14); background: #fff; color: var(--ink); cursor: pointer; }
-.ctrl button.on { background: var(--ink); color: #fff; }
+.ctrl { position: absolute; left: 28px; top: 400px; width: 258px; display: flex; flex-direction: column; }
+.ctrl button { font: 600 14px "Sans", system-ui; text-align: left; height: 40px; padding: 0; border: 0; border-top: 1px solid rgba(0,0,0,.09); background: none; color: var(--ink); cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+.ctrl button::after { content: "Off"; color: var(--soft); font-weight: 600; }
+.ctrl button.on::after { content: "On"; color: var(--ink); }
+.ctrl button.act::after { content: "\2192"; color: var(--soft); }
 .status { position: absolute; left: 50%; bottom: 22px; transform: translateX(-50%); font-size: 13px; color: var(--soft); font-weight: 600; white-space: nowrap; }
 .status b { color: var(--ink); }
+@media (min-width: 1101px) { .stage { left: 300px; } .status { left: calc(50% + 150px); } }
 @media (max-width: 1100px) {
   .panel { display: none; }
-  .ctrl { left: 12px; right: 12px; top: auto; bottom: 14px; flex-direction: row; flex-wrap: wrap; justify-content: center; }
-  .ctrl button { height: 44px; padding: 0 14px; }
+  .ctrl { left: 12px; right: 12px; width: auto; top: auto; bottom: 14px; flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 8px; }
+  .ctrl button { height: 44px; padding: 0 16px; border: 1px solid rgba(0,0,0,.14); border-radius: 22px; background: #fff; }
+  .ctrl button::after, .ctrl button.on::after, .ctrl button.act::after { content: none; }
+  .ctrl button.on { background: var(--ink); color: #fff; }
   .status { bottom: 128px; }
   .stage { inset: 0 0 150px; }
 }
@@ -102,10 +107,10 @@ html, body { height: 100%; background: radial-gradient(120% 90% at 50% 40%, #eef
   </ul>
 </aside>
 <div class="ctrl">
-  <button id="b-rotate">Turn it</button>
-  <button id="b-sleep">Leave it alone</button>
-  <button id="b-speed" class="on">Real e-ink timing</button>
-  <button id="b-hot">Show touch areas</button>
+  <button id="b-rotate" class="act">Rotate</button>
+  <button id="b-sleep" class="act">Sleep now</button>
+  <button id="b-speed" class="on">E-ink timing</button>
+  <button id="b-hot">Touch areas</button>
 </div>
 <div class="status" id="status"></div>
 
@@ -329,7 +334,7 @@ $('b-rotate').onclick = () => rotate();
 let sleepTimer = null;
 function armSleep() { clearTimeout(sleepTimer); if (cur !== 'art') sleepTimer = setTimeout(() => { history.push(cur); show('art', 'full'); }, 90000); }
 $('b-sleep').onclick = () => { history.push(cur); show('art', 'full'); };
-$('b-speed').onclick = (e) => { real = !real; e.target.classList.toggle('on', real); e.target.textContent = real ? 'Real e-ink timing' : 'Instant'; };
+$('b-speed').onclick = (e) => { real = !real; e.target.classList.toggle('on', real);  };
 $('b-hot').onclick = (e) => { document.body.classList.toggle('show-hot'); e.target.classList.toggle('on'); };
 
 window.addEventListener('keydown', (e) => {
@@ -348,7 +353,7 @@ function fit() {
   const dev = $('device'), portrait = dev.classList.contains('portrait');
   const w = portrait ? 607 : 982, h = portrait ? 982 : 607;
   const st = document.querySelector('.stage').getBoundingClientRect();
-  const side = innerWidth > 1100 ? 600 : 28;
+  const side = innerWidth > 1100 ? 70 : 28;
   const s = Math.min((st.width - side) / w, (st.height - 60) / h, 1);
   dev.style.scale = s;
   layoutTouch();
@@ -362,7 +367,7 @@ fetch(OUT + 'manifest.json').then((r) => r.json()).then((m) => {
   if (start.startsWith('reader')) $('device').classList.add('portrait');
   cur = start; $('img').src = OUT + frame(start).img + '?v=' + M.v;
   $('img').className = frame(start).orient === 'portrait' ? 'portrait' : '';
-  if (new URLSearchParams(location.search).has('instant')) { real = false; $('b-speed').classList.remove('on'); $('b-speed').textContent = 'Instant'; }
+  if (new URLSearchParams(location.search).has('instant')) { real = false; $('b-speed').classList.remove('on');  }
   $('img').onload = () => { fit(); say(hint()); $('img').onload = null; };
   fit(); say(hint()); requestAnimationFrame(fit); setTimeout(fit, 300);
   armSleep();

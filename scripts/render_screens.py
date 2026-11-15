@@ -17,7 +17,7 @@ import sys
 from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader
-from PIL import Image, ImageEnhance, ImageOps
+from PIL import Image, ImageEnhance, ImageFilter, ImageOps
 
 ROOT = Path(__file__).resolve().parent.parent
 SCREENS = ROOT / "screens"
@@ -34,14 +34,21 @@ def palette_image() -> Image.Image:
     return pal
 
 
-def dither_photo(src: Path, dst: Path, size: tuple[int, int], gamma: float = 0.92, contrast: float = 1.08) -> None:
-    """Crop to size, lift for paper, then error-diffuse to the 4 panel levels."""
+def dither_photo(src: Path, dst: Path, size: tuple[int, int], gamma: float = 0.85, contrast: float = 1.0,
+                 center: tuple[float, float] = (0.5, 0.4), zoom: float = 1.0) -> None:
+    """Crop to size, tone-map for paper (lift shadows, keep highlights off pure white),
+    soften a touch so the dither reads as grain, then error-diffuse to the 4 panel levels."""
     im = Image.open(src).convert("L")
-    im = ImageOps.fit(im, size, method=Image.Resampling.LANCZOS, centering=(0.5, 0.4))
-    im = ImageOps.autocontrast(im, cutoff=1)
-    im = im.point(lambda v: int(255 * ((v / 255) ** gamma)))
+    if zoom > 1:
+        w, h = im.size
+        cw, ch = int(w / zoom), int(h / zoom)
+        cx, cy = int((w - cw) * center[0]), int((h - ch) * center[1])
+        im = im.crop((cx, cy, cx + cw, cy + ch))
+    im = ImageOps.fit(im, size, method=Image.Resampling.LANCZOS, centering=center)
+    im = ImageOps.autocontrast(im, cutoff=0.5)
+    im = im.point(lambda v: int(14 + 222 * ((v / 255) ** gamma)))
     im = ImageEnhance.Contrast(im).enhance(contrast)
-    im = ImageEnhance.Sharpness(im).enhance(1.25)
+    im = im.filter(ImageFilter.GaussianBlur(0.5))
     q = im.convert("RGB").quantize(palette=palette_image(), dither=Image.Dither.FLOYDSTEINBERG)
     q.convert("L").save(dst)
 
@@ -64,7 +71,8 @@ def build(names: list[str]) -> list[dict]:
     for photo in data.get("photos", []):
         w, h = photo["size"]
         dither_photo(SCREENS / "demo" / photo["src"], OUT / "img" / photo["out"], (w, h),
-                     photo.get("gamma", 0.9), photo.get("contrast", 1.18))
+                     photo.get("gamma", 0.85), photo.get("contrast", 1.0),
+                     tuple(photo.get("center", (0.5, 0.4))), photo.get("zoom", 1.0))
 
     jobs = []
     for fid, f in flow["frames"].items():
