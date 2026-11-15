@@ -95,7 +95,7 @@ await step('turn back', () => page.click('#b-rotate'), 'board');
 const ai = await page.locator('#k-ai').boundingBox();
 await step('hold talk button', async () => { await page.mouse.move(ai.x + ai.width / 2, ai.y + 6); await page.mouse.down(); await page.waitForTimeout(1600); }, 'listening');
 await step('let go', async () => { await page.mouse.up(); await page.waitForTimeout(1600); }, 'voice_result');
-await step('tap done', () => tapFrame(0.91, 0.9), 'board');
+await step('tap done', () => tapFrame(0.9, 0.57), 'board');
 await step('leave it alone', () => page.click('#b-sleep'), 'art');
 await step('press up to wake', () => page.click('#k-up'), 'board');
 
