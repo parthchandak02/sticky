@@ -135,14 +135,20 @@ class State:
             return {h: v["payload"] for h, v in self.data["usage_pushes"].items()}
 
     # ---- devices -------------------------------------------------------------
-    def device_seen(self, address: str, firmware: str, page: str, now: float | None = None) -> None:
+    def device_seen(self, address: str, firmware: str, page: str, now: float | None = None,
+                    telemetry: dict[str, Any] | None = None) -> None:
         with self._lock:
             devices = self.data.setdefault("devices", {})
             prev = devices.get(address, {})
-            devices[address] = {"address": address, "firmware": firmware or prev.get("firmware", ""),
-                                "page": page, "seen_at": now or time.time()}
+            devices[address] = {**prev, "address": address, "firmware": firmware or prev.get("firmware", ""),
+                                "page": page, "seen_at": now or time.time(), **(telemetry or {})}
             if prev.get("firmware") != devices[address]["firmware"]:
                 self._save()  # persist version changes; plain check-ins stay in memory
+
+    def latest_device(self) -> dict[str, Any] | None:
+        with self._lock:
+            ds = list(self.data.get("devices", {}).values())
+        return max(ds, key=lambda d: d["seen_at"]) if ds else None
 
     def devices(self) -> list[dict[str, Any]]:
         with self._lock:

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import secrets
 import socket
@@ -133,12 +134,33 @@ FRAMES = {
 FULL_REFRESH_SECONDS = 30 * 60
 
 
+TELEMETRY = {"x-sticky-battery": "battery", "x-sticky-charging": "charging", "x-sticky-temp": "temp_c",
+             "x-sticky-humidity": "humidity", "x-sticky-rssi": "rssi", "x-sticky-orient": "orient"}
+
+
+def _telemetry(request: Request) -> dict[str, Any]:
+    out = {}
+    for header, key in TELEMETRY.items():
+        v = request.headers.get(header)
+        if v is not None:
+            try:
+                out[key] = float(v) if "." in v else int(v)
+            except ValueError:
+                out[key] = v[:16]
+    return out
+
+
 def _render_frame(frame: str, request: Request, progress: int = 0):
     if frame not in FRAMES:
         raise HTTPException(404, f"frames: {sorted(FRAMES)}")
     template, extra = FRAMES[frame]
-    battery = request.headers.get("x-sticky-battery")
-    d = live.data(int(battery) if battery and battery.isdigit() else None)
+    tel = _telemetry(request)
+    if request.client:
+        state.device_seen(request.client.host, request.headers.get("x-sticky-fw", ""), frame, telemetry=tel)
+    dev = state.latest_device() or {}
+    d = live.data(int(dev["battery"]) if isinstance(dev.get("battery"), (int, float)) else None)
+    if isinstance(dev.get("temp_c"), (int, float)) and time.time() - dev.get("seen_at", 0) < 3 * 3600:
+        d["today"]["inside"] = f"{round(dev['temp_c'])}°"
     if frame == "onthisday" and not d["memory"]:
         raise HTTPException(404, "no photo from this day")
     deck = list(settings.deck)
@@ -146,15 +168,30 @@ def _render_frame(frame: str, request: Request, progress: int = 0):
            "progress": max(0, min(24, progress)), **extra}
     if frame in ("board", "photo", "note"):
         ctx["toast"] = state.flash()
-    if request.client:
-        state.device_seen(request.client.host, request.headers.get("x-sticky-fw", ""), frame)
     return renderer.render(template, frame, ctx)
 
 
 @app.get("/screen/deck", dependencies=[Depends(auth)])
-def screen_deck() -> dict[str, Any]:
-    """The pages the device swipes through, and how long to sleep between refreshes."""
-    return {"deck": list(settings.deck), "frames": sorted(FRAMES), "sleep_seconds": FULL_REFRESH_SECONDS}
+def screen_deck(request: Request) -> dict[str, Any]:
+    """Everything the firmware should do that can change without a new build: the pages, how long to
+    sleep, whether to chime, hold length, how often to clean the panel."""
+    sessions = state.sessions()
+    waiting = [s for s in sessions if s["state"] == "waiting"]
+    busy = any(s["state"] == "working" for s in sessions)
+    if request.client:
+        state.device_seen(request.client.host, request.headers.get("x-sticky-fw", ""), "deck",
+                          telemetry=_telemetry(request))
+    return {
+        "deck": list(settings.deck),
+        "frames": sorted(FRAMES),
+        "start": "approve" if waiting else settings.deck[0],
+        # Sleep less while Claude is busy, so a prompt shows up soon even on battery.
+        "sleep_seconds": 120 if waiting else (300 if busy else FULL_REFRESH_SECONDS),
+        "chime": bool(waiting),
+        "hold_ms": 1000,
+        "full_refresh_every": 8,
+        "firmware_manifest": "/firmware/sticky-os.json",
+    }
 
 
 @app.get("/screen/{frame}.png", dependencies=[Depends(auth)])
@@ -168,7 +205,11 @@ def screen_bmp(frame: str, request: Request, progress: int = 0, rotate: int = 0,
     if rotate not in (0, 90, 180, 270) or bits not in (2, 8):
         raise HTTPException(400, "rotate 0/90/180/270, bits 2 or 8")
     img, _ = _render_frame(frame, request, progress)
-    return Response(draw.to_bmp(img, rotate, bits), media_type="image/bmp", headers={"Cache-Control": "no-store"})
+    body = draw.to_bmp(img, rotate, bits)
+    etag = '"' + hashlib.sha1(body).hexdigest()[:16] + '"'
+    if request.headers.get("if-none-match") == etag:
+        return Response(status_code=304, headers={"ETag": etag})
+    return Response(body, media_type="image/bmp", headers={"Cache-Control": "no-store", "ETag": etag})
 
 
 @app.get("/screen/{frame}.json", dependencies=[Depends(auth)])

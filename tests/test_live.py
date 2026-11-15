@@ -119,3 +119,14 @@ def test_hook_script_relays_decision(client, tmp_path):
     finally:
         srv.terminate()
         srv.wait(5)
+
+
+def test_deck_and_telemetry(client):
+    h = {"X-Sticky-Battery": "64", "X-Sticky-Temp": "21.6", "X-Sticky-Fw": "os-test"}
+    deck = client.get("/screen/deck", headers=h).json()
+    assert deck["start"] == "board" and deck["chime"] is False and deck["hold_ms"] == 1000
+    dev = client.appmod.state.latest_device()
+    assert dev["battery"] == 64 and dev["temp_c"] == 21.6 and dev["firmware"] == "os-test"
+    client.post("/api/permission", json={"session_id": "s9", "tool_name": "Bash", "sticky_host": "m"})
+    deck = client.get("/screen/deck").json()
+    assert deck["start"] == "approve" and deck["chime"] is True and deck["sleep_seconds"] == 120
