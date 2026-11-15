@@ -99,6 +99,21 @@ mark at once, then the next frame arrives.
 - Before the first flash, the whole 32 MB flash is backed up, so CrossMux can be restored exactly.
 - Only the first install uses USB. Everything after it is over the air.
 
+## Status (2026-11-15)
+
+Flashed on the Sticky (SSD1677 panel) and updated itself over the air once (`os-6634b2f0`).
+Verified on the device: boot, panel, Wi-Fi imported from CrossMux, deck and Board from the Mac mini
+server, gray overlay drawing, sensors (SHT40, IMU, gauge), serial console, OTA with trial boot and
+mark-good. Not yet verified by hand: touch gestures, hold-to-allow, keys, voice, deep sleep on battery,
+rollback after a bad build.
+
+Restore CrossMux exactly: `esptool.py --chip esp32s3 -p <port> -b 230400 write-flash 0 ~/sticky-backups/crossmux-867be17b-full-32MB.bin`
+(sha256 c8e7e62d8f12295953c04dc57802d86c2733c5730feff33b8ecb92f8040e15f9, on the Mac mini).
+
+Ship an update: `pio run` on the Mac mini, then in the server checkout
+`uv run python scripts/publish_firmware.py <build dir> --channel sticky-os`. The device installs it on its next
+boot or update check (every 6 hours), or type `ota` on the serial console.
+
 ## Phases
 
 | # | What | Done when |
