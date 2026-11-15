@@ -9,6 +9,8 @@
 
 namespace ota {
 
+const char* boardTag();  // "CROSSPOINT-BOARD-V1:sticky;", embedded in every image
+
 // Call first thing in setup(). May reboot into the previous build.
 void bootCheck();
 // The running build proved itself (drew a server frame).

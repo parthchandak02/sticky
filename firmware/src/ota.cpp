@@ -14,7 +14,10 @@
 #include "settings.h"
 
 // Same tag format as CrossMux, so either firmware accepts the other's Sticky builds and refuses other boards'.
+// Kept in the image on purpose: boardTag() is read at boot so the linker cannot drop it.
 extern "C" __attribute__((used)) const char STICKY_BOARD_TAG[] = "CROSSPOINT-BOARD-V1:sticky;";
+extern "C" __attribute__((used)) const char* const STICKY_BOARD_TAG_PTR = STICKY_BOARD_TAG;
+const char* boardTag() { return *(const char* volatile*)(&STICKY_BOARD_TAG_PTR); }
 
 namespace ota {
 namespace {
@@ -70,6 +73,7 @@ bool onTrial() {
 }
 
 void bootCheck() {
+  ESP_LOGI(TAG, "board tag %s", boardTag() + 20);
   Preferences p;
   p.begin(kNs, false);
   if (!p.getBool("trial", false)) {
