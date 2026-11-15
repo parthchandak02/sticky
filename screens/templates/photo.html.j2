@@ -6,16 +6,18 @@
 .band .place { font-family:"News",serif; font-style:italic; font-size:30px; font-weight:500; line-height:1; }
 .band .from { font-size:16px; font-weight:600; color:var(--ink); }
 
+.empty { position:absolute; left:var(--m); top:40px; font-family:"News",serif; font-style:italic; font-size:30px; color:var(--graphite); }
+.empty b { display:block; font-style:normal; font-weight:600; font-size:64px; color:var(--ink); }
 .heart { margin-left:auto; width:52px; height:52px; display:grid; place-items:center; }
 
 {% endblock %}
 {% block body %}
-<img class="ph" src="../img/photo_full.png" data-tap="photo:next">
+{% if d.photo.full %}<img class="ph" src="{{ d.photo.full }}" data-tap="photo:next">{% else %}<div class="empty"><b>No photos yet</b>Send one to Hermes and it lands here.</div>{% endif %}
 <div class="band">
-  <div class="place">Ubud, in the rain</div>
-  <div class="from">from P, 2h ago{{ ", heart sent" if hearted }}</div>
+  <div class="place">{{ d.photo.caption }}</div>
+  <div class="from">{{ d.photo.byline }}{{ ", heart sent" if hearted or d.photo.hearted }}</div>
   <div class="heart {{ 'sent' if hearted }}" data-tap="heart">
-    <svg width="34" height="31" viewBox="0 0 30 28"><path d="M15 26S2 18 2 9a6.5 6.5 0 0 1 13-1 6.5 6.5 0 0 1 13 1c0 9-13 17-13 17z" fill="{{ '#000' if hearted else 'none' }}" stroke="#000" stroke-width="2.6" stroke-linejoin="round"/></svg>
+    <svg width="34" height="31" viewBox="0 0 30 28"><path d="M15 26S2 18 2 9a6.5 6.5 0 0 1 13-1 6.5 6.5 0 0 1 13 1c0 9-13 17-13 17z" fill="{{ '#000' if hearted or d.photo.hearted else 'none' }}" stroke="#000" stroke-width="2.6" stroke-linejoin="round"/></svg>
   </div>
 </div>
 {% endblock %}

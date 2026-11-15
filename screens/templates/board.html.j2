@@ -45,6 +45,7 @@
 .ask .host { font-size:15px; font-weight:600; }
 .ask .cmd { margin-top:10px; font-family:"Code"; font-size:15px; line-height:1.35; padding:8px 10px; background:var(--paper); color:var(--ink); border-radius:3px; }
 .ask .cmd .tool { font-family:"Sans"; font-weight:700; font-size:14px; color:var(--graphite); display:block; margin-bottom:2px; }
+.ask .answer { margin-top:12px; font-size:16px; font-weight:700; }
 .ask .acts { display:flex; gap:10px; margin-top:12px; }
 .ask .acts .btn { height:48px; }
 .ask .acts .hold { flex:1; }
@@ -73,14 +74,14 @@
 
   {% for m in u.limits %}
   <div class="meter">
-    <div class="top"><div class="name">{{ m.name }}<span>resets {{ m.reset }}</span></div><div class="pct">{{ m.pct }}<i>%</i></div></div>
+    <div class="top"><div class="name">{{ m.name }}<span>{{ m.reset }}</span></div><div class="pct">{{ m.pct }}<i>%</i></div></div>
     <div class="track"><div class="fill" style="width:{{ m.pct }}%"></div><div class="rest" style="width:{{ 100 - m.pct }}%"></div></div>
   </div>
   {% endfor %}
 
   <div class="chart">
-    <div class="peak" style="top:26px"><span>${{ "%.2f"|format(u.days|max) }}</span></div>
-    <div class="bars">{% for v in u.days %}<i class="{{ 'today' if loop.last }}" style="height:{{ (v / (u.days|max) * 100)|round|int }}%"></i>{% endfor %}</div>
+    {% if u.days|max > 0 %}<div class="peak" style="top:26px"><span>${{ "%.2f"|format(u.days|max) }}</span></div>{% endif %}
+    {% set top = [u.days|max, 0.01]|max %}<div class="bars">{% for v in u.days %}<i class="{{ 'today' if loop.last }}" style="height:{{ [(v / top * 100)|round|int, 2]|max }}%"></i>{% endfor %}</div>
     <div class="axis"><span>Last 14 days</span><b>Today</b></div>
   </div>
 </section>
@@ -98,11 +99,13 @@
   <div class="ask" data-tap="open:approve">
     <div class="who"><div class="proj">{{ s.project }}</div><div class="host">{{ s.host }} · {{ s.ago }}</div></div>
     <div class="cmd"><span class="tool">{{ s.tool }}</span>{{ s.command }}</div>
+    {% if s.approvable is not defined or s.approvable %}
     <div class="acts">
       <div class="btn ghost" data-tap="deny:{{ s.id }}">Deny</div>
       <div class="btn fill hold" data-hold="allow:{{ s.id }}">
         Hold to allow
       </div>
+    {% else %}<div class="answer">Answer in the terminal on {{ s.host }}</div>{% endif %}
     </div>
   </div>
   {% endfor %}

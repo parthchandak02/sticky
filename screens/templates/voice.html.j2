@@ -44,15 +44,13 @@
 <div class="kicker">{{ v.kind }}</div>
 <div class="vt">{{ v.title }}</div>
 <div class="facts">
-  <div class="r"><span>Company</span>Avis</div>
-  <div class="r"><span>Drivers</span>Both of us</div>
-  <div class="r"><span>Pick up</span>12 Dec, at the airport</div>
-  <div class="r"><span>Due</span>1 Dec</div>
+  {% for f in v.facts %}<div class="r"><span>{{ f[0] }}</span>{{ f[1] }}</div>{% endfor %}
 </div>
-<div class="heard"><div class="h">What I heard</div><p>&ldquo;{{ v.heard }}&rdquo;</p></div>
-<div class="acts">
+{% if v.heard %}<div class="heard"><div class="h">What I heard</div><p>&ldquo;{{ v.heard }}&rdquo;</p></div>{% endif %}
+{% if v.heard %}<div class="acts">
   <div class="btn line" data-tap="undo">Undo</div>
   <div class="btn dark" data-tap="done">Done</div>
+{% endif %}
 </div>
 {% endif %}
 {% endblock %}

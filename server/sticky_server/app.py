@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import secrets
 import socket
+import time
 from typing import Any
 
 import uvicorn
@@ -14,6 +15,8 @@ from rich.console import Console
 
 from . import config
 from .render import draw, pages
+from .live import Live
+from .screens import Renderer
 from .state import State
 from .usage import UsageCache
 from .voice import VoiceJobs, recent_notes
@@ -24,6 +27,7 @@ HOST = socket.gethostname().split(".")[0]
 state = State(settings.state_file)
 usage = UsageCache(settings, HOST, state.usage_pushes)
 voice = VoiceJobs(settings)
+renderer = Renderer()
 
 app = FastAPI(title="sticky-server", version="0.1.0")
 
@@ -50,6 +54,9 @@ def auth(request: Request) -> None:
 # ---- dashboard ------------------------------------------------------------
 def _label(host: str) -> str:
     return settings.host_labels.get(host, host)
+
+
+live = Live(settings, state, usage, lambda h: settings.host_labels.get(h, h))
 
 
 def _labelled_usage() -> dict:
@@ -107,6 +114,164 @@ def preview(request: Request) -> str:
 body{{background:#ddd;font:14px system-ui;margin:24px;color:#111}}
 figure{{margin:0 0 24px}} img{{max-width:100%;height:auto;border:1px solid #888;background:#fff}}
 </style></head><body><h1>Sticky pages</h1>{imgs}</body></html>"""
+
+
+# ---- screens (HTML renderer) ------------------------------------------------
+# frame -> (template, extra context). Every frame is 800x480 except the reader.
+FRAMES = {
+    "board": ("board", {"title": "The Board"}),
+    "approve": ("approve", {"title": "Permission"}),
+    "today": ("today", {"title": "Today"}),
+    "countdown": ("countdown", {"title": "Counting down"}),
+    "photo": ("photo", {"folio": False}),
+    "onthisday": ("onthisday", {"folio": False}),
+    "note": ("note", {"title": "On the fridge"}),
+    "listening": ("voice", {"title": "Voice", "mode": "listening"}),
+    "voice_result": ("voice", {"title": "Voice note", "mode": "result"}),
+    "art": ("art", {"folio": False}),
+}
+FULL_REFRESH_SECONDS = 30 * 60
+
+
+def _render_frame(frame: str, request: Request, progress: int = 0):
+    if frame not in FRAMES:
+        raise HTTPException(404, f"frames: {sorted(FRAMES)}")
+    template, extra = FRAMES[frame]
+    battery = request.headers.get("x-sticky-battery")
+    d = live.data(int(battery) if battery and battery.isdigit() else None)
+    if frame == "onthisday" and not d["memory"]:
+        raise HTTPException(404, "no photo from this day")
+    deck = list(settings.deck)
+    ctx = {"d": d, "deck_len": len(deck), "deck_idx": deck.index(frame) if frame in deck else -1,
+           "progress": max(0, min(24, progress)), **extra}
+    if frame in ("board", "photo", "note"):
+        ctx["toast"] = state.flash()
+    if request.client:
+        state.device_seen(request.client.host, request.headers.get("x-sticky-fw", ""), frame)
+    return renderer.render(template, frame, ctx)
+
+
+@app.get("/screen/deck", dependencies=[Depends(auth)])
+def screen_deck() -> dict[str, Any]:
+    """The pages the device swipes through, and how long to sleep between refreshes."""
+    return {"deck": list(settings.deck), "frames": sorted(FRAMES), "sleep_seconds": FULL_REFRESH_SECONDS}
+
+
+@app.get("/screen/{frame}.png", dependencies=[Depends(auth)])
+def screen_png(frame: str, request: Request, progress: int = 0) -> Response:
+    img, _ = _render_frame(frame, request, progress)
+    return Response(draw.to_png(img), media_type="image/png", headers={"Cache-Control": "no-store"})
+
+
+@app.get("/screen/{frame}.bmp", dependencies=[Depends(auth)])
+def screen_bmp(frame: str, request: Request, progress: int = 0, rotate: int = 0, bits: int = 2) -> Response:
+    if rotate not in (0, 90, 180, 270) or bits not in (2, 8):
+        raise HTTPException(400, "rotate 0/90/180/270, bits 2 or 8")
+    img, _ = _render_frame(frame, request, progress)
+    return Response(draw.to_bmp(img, rotate, bits), media_type="image/bmp", headers={"Cache-Control": "no-store"})
+
+
+@app.get("/screen/{frame}.json", dependencies=[Depends(auth)])
+def screen_json(frame: str, request: Request, progress: int = 0) -> dict[str, Any]:
+    """Tap and hold areas for the frame, in panel pixels."""
+    _, hotspots = _render_frame(frame, request, progress)
+    return {"frame": frame, "hotspots": hotspots}
+
+
+@app.post("/api/action", dependencies=[Depends(auth)])
+async def screen_action(request: Request) -> dict[str, Any]:
+    """The device reports a tap or a completed hold. Returns the frame to show next and how to refresh."""
+    body = await _json(request)
+    frame, action = str(body.get("frame", "")), str(body.get("action", ""))
+    verb, _, arg = action.partition(":")
+    nxt, refresh = frame, "partial"
+    if verb in ("allow", "deny"):
+        perm = state.permission(arg)
+        if not perm:
+            raise HTTPException(404, "that prompt is gone")
+        if state.decide_permission(arg, verb):
+            state.flash(f"{'Allowed' if verb == 'allow' else 'Denied'}, {perm['project']}")
+        nxt, refresh = "board", "full"
+    elif action == "open:approve":
+        nxt, refresh = "approve", "full"
+    elif action == "back":
+        nxt, refresh = "board", "full"
+    elif action == "heart":
+        if frame == "photo":
+            photos = live.photos()
+            if photos:
+                name = photos[state.fridge().get("photo_index", 0) % len(photos)].name
+                state.fridge_update(hearts=sorted(set(state.fridge().get("hearts", [])) | {name}))
+        else:
+            state.fridge_update(note_heart=time.time())
+        state.flash("Heart sent")
+    elif action == "photo:next":
+        state.fridge_update(photo_index=state.fridge().get("photo_index", 0) + 1)
+        nxt = "photo"
+    elif action == "reply":
+        nxt, refresh = "listening", "full"
+    elif action in ("done", "undo"):
+        if action == "undo":
+            f = live.data()["voice"].get("file")
+            if f:
+                (settings.notes_dir / f).unlink(missing_ok=True)
+        nxt, refresh = settings.deck[0], "full"
+    else:
+        raise HTTPException(400, f"unknown action {action!r}")
+    return {"next": nxt, "refresh": refresh}
+
+
+# ---- permission prompts answered on the Sticky ------------------------------
+@app.post("/api/permission", dependencies=[Depends(auth)])
+async def permission_open(request: Request) -> dict[str, Any]:
+    """Called by hooks/sticky-permission.py when Claude Code asks for permission."""
+    event = await _json(request)
+    state.apply_hook({**event, "hook_event_name": "PermissionRequest"})
+    return {"id": state.open_permission(event), "wait": settings.approve_wait}
+
+
+@app.get("/api/permission/{pid}", dependencies=[Depends(auth)])
+def permission_wait(pid: str, wait: float = 20) -> dict[str, Any]:
+    """Long-poll: returns as soon as the prompt is answered, or after `wait` seconds."""
+    p = state.wait_permission(pid, max(0.0, min(wait, 30.0)))
+    if not p:
+        raise HTTPException(404, "unknown prompt")
+    return {"id": pid, "decision": p["decision"]}
+
+
+@app.post("/api/permission/{pid}/expire", dependencies=[Depends(auth)])
+def permission_expire(pid: str) -> dict[str, bool]:
+    return {"ok": state.decide_permission(pid, "expired")}
+
+
+# ---- fridge: notes and photos sent from Hermes or a phone -------------------
+@app.post("/api/fridge/note", dependencies=[Depends(auth)])
+async def fridge_note(request: Request) -> dict[str, bool]:
+    body = await _json(request)
+    text = str(body.get("text", "")).strip()
+    if not text:
+        raise HTTPException(400, "text is required")
+    (settings.fridge_dir / "note.json").write_text(json.dumps(
+        {"text": text[:160], "from": str(body.get("from", ""))[:12], "at": time.time()}))
+    state.fridge_update(note_heart=None)
+    return {"ok": True}
+
+
+@app.post("/api/fridge/photo", dependencies=[Depends(auth)])
+async def fridge_photo(file: UploadFile, caption: str = "", sender: str = "", taken: str = "",
+                       place: str = "") -> dict[str, str]:
+    data = await file.read()
+    suffix = "." + (file.filename or "p.jpg").rsplit(".", 1)[-1].lower()
+    if suffix not in (".jpg", ".jpeg", ".png", ".webp") or len(data) < 1000:
+        raise HTTPException(400, "send a jpg, png or webp photo")
+    d = settings.fridge_dir / "photos"
+    d.mkdir(parents=True, exist_ok=True)
+    name = time.strftime("%Y%m%d-%H%M%S")
+    (d / f"{name}{suffix}").write_bytes(data)
+    (d / f"{name}.json").write_text(json.dumps({"caption": caption[:40], "from": sender[:12], "at": time.time(),
+                                                  "taken": taken[:10], "place": place[:40]}))
+    state.fridge_update(photo_index=0)
+    return {"id": name}
 
 
 # ---- Claude Code intake ---------------------------------------------------

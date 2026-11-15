@@ -16,6 +16,29 @@ python3 -m http.server 8786                       # then open /prototype/
 node scripts/proto_test.mjs http://127.0.0.1:8786/prototype/ cook/stills/proto
 ```
 
+## Live server
+
+`sticky-server` renders the same templates from live data (`server/sticky_server/live.py`, `screens.py`).
+
+| Method | Path | Purpose |
+|---|---|---|
+| GET | `/screen/deck` | Pages to swipe through and how long to sleep |
+| GET | `/screen/{frame}.bmp?bits=2` | The frame for the panel (96 KB); `.png` for a preview; `?progress=0..24` fills the hold dial |
+| GET | `/screen/{frame}.json` | Its tap and hold areas |
+| POST | `/api/action` | `{"frame", "action"}` from a tap or a finished hold; returns `{"next", "refresh"}` |
+| POST | `/api/permission` | From `hooks/sticky-permission.py`: a Claude prompt waiting for an answer |
+| GET | `/api/permission/{id}?wait=20` | The hook waits here for allow or deny |
+| POST | `/api/fridge/note` | `{"text", "from"}`, the note on the fridge (Hermes can send it) |
+| POST | `/api/fridge/photo` | multipart `file`, with `caption`, `sender`, `taken`, `place` |
+
+Frames: `board`, `approve`, `today`, `countdown`, `photo`, `onthisday` (only when a photo was taken on this day), `note`, `listening`, `voice_result`, `art`. The reader is still demo only.
+
+Data: Claude sessions and limits from the hooks, spend from ccusage, weather from Open-Meteo (`STICKY_LAT`, `STICKY_LON`), calendar from a private iCal URL (`STICKY_CALENDAR_ICS`), countdowns from `$STICKY_DATA_DIR/countdowns.json` (`[{"name", "date", "what"}]`, first is the big one), notes and photos from `$STICKY_DATA_DIR/fridge/`.
+
+### Answering Claude from the Sticky
+
+Install on a machine with `python3 scripts/install_client.py --url ... --token ... --approve 45`. When Claude asks for permission, the prompt shows on the Sticky; hold to allow or tap Deny. If nobody answers in 45 seconds the terminal asks as usual, and any error does the same: the hook never allows anything by itself. Only the tool name, folder and a one-line summary (the command or file path) leave the machine.
+
 ## Gestures
 
 | Gesture | Where | Does |

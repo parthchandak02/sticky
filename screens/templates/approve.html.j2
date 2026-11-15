@@ -21,26 +21,27 @@
 .dial .face b { font-family:"News",serif; font-size:46px; font-weight:500; line-height:1; }
 .dial .face span { font-size:18px; font-weight:700; margin-top:4px; }
 .deny { margin-top:auto; width:220px; height:52px; }
+.side .answer { font-family:"News",serif; font-style:italic; font-size:28px; line-height:1.15; }
 .done .face { background:var(--paper); color:var(--ink); border:3px solid var(--ink); }
 {% endblock %}
 {% block body %}
-{% set s = d.sessions[0] %}
+{% set s = (d.sessions|selectattr('state','equalto','waiting')|first) or d.sessions[0] %}
 <div class="back" data-tap="back"></div>
 <section class="main">
   <div class="proj">{{ s.project }}</div>
   <div class="wants">wants to run</div>
   <div class="cmdbox">
-    <div class="inner"><div class="tool"><span>{{ s.tool }}</span><span class="graphite">~/apps/{{ s.project }}</span></div><code>{{ s.command }}</code></div>
+    <div class="inner"><div class="tool"><span>{{ s.tool }}</span><span class="graphite">{{ s.where }}</span></div><code>{{ s.command }}</code></div>
   </div>
   <div class="facts">
     <div>Machine<b>{{ s.host }}</b></div>
-    <div>Asked<b>{{ s.ago }} ago</b></div>
-    <div>Session<b>4h 10m</b></div>
+    <div>Asked<b>{{ s.asked or (s.ago ~ " ago") }}</b></div>
+    <div>Session<b>{{ s.age }}</b></div>
   </div>
 </section>
-<section class="side">
+{% if s.approvable is not defined or s.approvable %}<section class="side">
   {% set p = progress|default(0) %}
-  <div class="dial {{ 'done' if p >= 24 }}" data-hold="allow:s1">
+  <div class="dial {{ 'done' if p >= 24 }}" data-hold="allow:{{ s.id }}">
     <svg viewBox="0 0 236 236" width="220" height="220">
       {% set C = 2 * 3.14159 * 106 %}
       <circle cx="118" cy="118" r="106" fill="none" stroke="#000" stroke-width="2.5"/>
@@ -48,6 +49,6 @@
     </svg>
     <div class="face">{% if p >= 24 %}<b>Allowed</b>{% else %}<b>Hold</b><span>to allow</span>{% endif %}</div>
   </div>
-  <div class="btn line deny" data-tap="deny:s1">Deny</div>
-</section>
+  <div class="btn line deny" data-tap="deny:{{ s.id }}">Deny</div>
+</section>{% else %}<section class="side"><div class="answer">Answer this one in the terminal on {{ s.host }}.</div><div class="btn line deny" data-tap="back">Back</div></section>{% endif %}
 {% endblock %}

@@ -12,3 +12,4 @@ cook/compare/
 node_modules/
 screens/out/html/
 screens/out/jobs.json
+screens/out/img/live-*

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import secrets
 import threading
 import time
 from pathlib import Path
@@ -29,7 +30,9 @@ class State:
     def __init__(self, path: Path):
         self.path = path
         self._lock = threading.Lock()
-        self.data: dict[str, Any] = {"sessions": {}, "limits": {}, "usage_pushes": {}, "devices": {}}
+        self._decided = threading.Condition(self._lock)
+        self.data: dict[str, Any] = {"sessions": {}, "limits": {}, "usage_pushes": {}, "devices": {},
+                                     "permissions": {}, "fridge": {}}
         if path.is_file():
             try:
                 self.data.update(json.loads(path.read_text()))
@@ -144,3 +147,88 @@ class State:
     def devices(self) -> list[dict[str, Any]]:
         with self._lock:
             return sorted(self.data.get("devices", {}).values(), key=lambda d: -d["seen_at"])
+
+    # ---- permission prompts answered on the device ----------------------------
+    PERMISSION_TTL = 15 * 60
+
+    def open_permission(self, event: dict[str, Any], now: float | None = None) -> str:
+        """A PermissionRequest that the hook is waiting on. Returns its id."""
+        now = now or time.time()
+        host = event.get("sticky_host") or "unknown"
+        pid = secrets.token_urlsafe(9)
+        cwd = event.get("cwd") or ""
+        with self._lock:
+            perms = self.data.setdefault("permissions", {})
+            for k in [k for k, p in perms.items() if now - p["created"] > self.PERMISSION_TTL]:
+                del perms[k]
+            perms[pid] = {"id": pid, "host": host, "session_id": event.get("session_id", ""),
+                          "project": Path(cwd).name if cwd else "?", "cwd": cwd,
+                          "tool": event.get("tool_name", ""), "summary": str(event.get("summary", ""))[:300],
+                          "created": now, "decision": None}
+            self._save()
+        return pid
+
+    def pending_permission(self, host: str, session_id: str) -> dict[str, Any] | None:
+        with self._lock:
+            for p in self.data.get("permissions", {}).values():
+                if p["decision"] is None and p["host"] == host and p["session_id"] == session_id:
+                    return dict(p)
+        return None
+
+    def permission(self, pid: str) -> dict[str, Any] | None:
+        with self._lock:
+            p = self.data.get("permissions", {}).get(pid)
+            return dict(p) if p else None
+
+    def decide_permission(self, pid: str, decision: str, now: float | None = None) -> bool:
+        """allow, deny, or expired (the hook gave up and the terminal asks instead)."""
+        if decision not in ("allow", "deny", "expired"):
+            raise ValueError(decision)
+        with self._lock:
+            p = self.data.get("permissions", {}).get(pid)
+            if not p or p["decision"] is not None:
+                return False
+            p["decision"], p["decided_at"] = decision, now or time.time()
+            key = f"{p['host']}:{p['session_id']}"
+            sess = self.data["sessions"].get(key)
+            if sess and decision in ("allow", "deny"):
+                sess["state"] = "working" if decision == "allow" else "idle"
+                sess["message"] = ("Allowed from the Sticky" if decision == "allow" else "You said no on the Sticky")
+            self._save()
+            self._decided.notify_all()
+            return True
+
+    def wait_permission(self, pid: str, timeout: float) -> dict[str, Any] | None:
+        deadline = time.time() + timeout
+        with self._decided:
+            while True:
+                p = self.data.get("permissions", {}).get(pid)
+                if not p or p["decision"] is not None:
+                    return dict(p) if p else None
+                left = deadline - time.time()
+                if left <= 0:
+                    return dict(p)
+                self._decided.wait(left)
+
+    # ---- fridge: hearts, photo cursor, one-shot toasts ----------------------
+    def fridge(self) -> dict[str, Any]:
+        with self._lock:
+            return dict(self.data.setdefault("fridge", {}))
+
+    def fridge_update(self, **kw: Any) -> None:
+        with self._lock:
+            self.data.setdefault("fridge", {}).update(kw)
+            self._save()
+
+    def flash(self, text: str | None = None) -> str | None:
+        """Set a toast (text) or take the pending one (no text)."""
+        with self._lock:
+            f = self.data.setdefault("fridge", {})
+            if text is not None:
+                f["toast"] = {"text": text, "at": time.time()}
+                self._save()
+                return text
+            t = f.pop("toast", None)
+            if t:
+                self._save()
+            return t["text"] if t and time.time() - t["at"] < 120 else None

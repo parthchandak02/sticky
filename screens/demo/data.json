@@ -26,12 +26,12 @@
    {
     "name": "5 hours",
     "pct": 62,
-    "reset": "1h 12m"
+    "reset": "resets 1h 12m"
    },
    {
     "name": "Week",
     "pct": 38,
-    "reset": "3 days"
+    "reset": "resets 3 days"
    }
   ]
  },
@@ -44,7 +44,9 @@
    "state": "waiting",
    "tool": "Bash",
    "command": "npm run deploy -- --prod",
-   "doing": "Waiting for permission"
+   "doing": "Waiting for permission",
+   "where": "~/apps/tandem",
+   "age": "4h 10m"
   },
   {
    "id": "s2",
@@ -113,7 +115,7 @@
   "hi": 17,
   "lo": 9,
   "sky": "Rain after 4 pm",
-  "inside": "21.4\u00b0",
+  "inside": "21\u00b0",
   "humidity": "48%",
   "events": [
    {
@@ -148,7 +150,28 @@
     "where": "Tonight"
    }
   ],
-  "now_h": 18.88
+  "now_h": 18.88,
+  "cards": [
+   {
+    "when": "20:00",
+    "aside": "in 1h 7m",
+    "what": "Dinner at home",
+    "sub": "Home",
+    "tap": "event:0"
+   },
+   {
+    "when": "Mon",
+    "aside": "9:30",
+    "what": "Dentist",
+    "sub": "Market St"
+   },
+   {
+    "when": "Tue",
+    "aside": "all day",
+    "what": "Jobwright launch",
+    "sub": "3 tasks left"
+   }
+  ]
  },
  "countdown": {
   "days": 47,
@@ -183,6 +206,36 @@
    "Avis, both of us as drivers",
    "Pick up 12 Dec at the airport"
   ],
-  "heard": "remind hermes to book the queenstown car, avis, both drivers, pick up twelfth at the airport"
+  "heard": "remind hermes to book the queenstown car, avis, both drivers, pick up twelfth at the airport",
+  "facts": [
+   [
+    "Company",
+    "Avis"
+   ],
+   [
+    "Drivers",
+    "Both of us"
+   ],
+   [
+    "Pick up",
+    "12 Dec, at the airport"
+   ],
+   [
+    "Due",
+    "1 Dec"
+   ]
+  ]
+ },
+ "photo": {
+  "full": "../img/photo_full.png",
+  "caption": "Ubud, in the rain",
+  "byline": "from P, 2h ago"
+ },
+ "memory": {
+  "half": "../img/photo_half.png",
+  "years": 2,
+  "place": "Ubud, Bali",
+  "line": "The rainy week",
+  "date": "15 Nov 2024"
  }
 }

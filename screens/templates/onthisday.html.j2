@@ -10,13 +10,13 @@
 .col .foot { margin-top:auto; display:flex; justify-content:space-between; align-items:center; font-size:16px; font-weight:600; color:var(--graphite); border-top:1.5px solid var(--pencil); padding-top:10px; }
 {% endblock %}
 {% block body %}
-<img class="ph" src="../img/photo_half.png" data-tap="photo:next">
+<img class="ph" src="{{ d.memory.half }}" data-tap="photo:next">
 <div class="col">
-  <div class="n">2</div>
-  <div class="u">years ago today</div>
+  <div class="n">{{ d.memory.years }}</div>
+  <div class="u">{{ "year" if d.memory.years == 1 else "years" }} ago today</div>
   <div class="rule"></div>
-  <div class="place">Ubud, Bali</div>
-  <div class="meta">The rainy week</div>
-  <div class="foot"><span>15 Nov 2024</span><span class="dots">{% for i in range(deck_len) %}<i class="{{ 'on' if i == deck_idx }}"></i>{% endfor %}</span></div>
+  <div class="place">{{ d.memory.place }}</div>
+  {% if d.memory.line %}<div class="meta">{{ d.memory.line }}</div>{% endif %}
+  <div class="foot"><span>{{ d.memory.date }}</span><span class="dots">{% for i in range(deck_len) %}<i class="{{ 'on' if i == deck_idx }}"></i>{% endfor %}</span></div>
 </div>
 {% endblock %}

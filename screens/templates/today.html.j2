@@ -36,10 +36,10 @@
 {% block body %}
 {% set t = d.today %}
 <div class="mast"><div class="day">{{ t.day }}</div><div class="date">{{ t.date }}</div></div>
-<div class="wx">
+{% if t.temp != "" %}<div class="wx">
   <div class="t">{{ t.temp }}<sup>°</sup></div>
-  <div class="info"><b>{{ t.sky }}</b>{{ t.hi }}° / {{ t.lo }}°, 21° inside</div>
-</div>
+  <div class="info"><b>{{ t.sky }}</b>{{ t.hi }}° / {{ t.lo }}°{% if t.inside %}, {{ t.inside }} inside{% endif %}</div>
+</div>{% endif %}
 
 {% set h0, h1 = 7, 23 %}
 {% macro x(h) %}{{ ((h - h0) / (h1 - h0) * 752)|round(1) }}{% endmacro %}
@@ -55,11 +55,8 @@
 </div>
 
 <div class="upnext">
-  {% set upcoming = t.events|selectattr('end','gt',t.now_h)|list %}
-  {% for e in upcoming[:1] %}
-  <div class="card" data-tap="event:{{ loop.index0 }}"><div class="when">{{ e.time }}<i>in 1h 7m</i></div><div class="what">{{ e.title }}</div><div class="sub">Home</div></div>
+  {% for c in t.cards[:3] %}
+  <div class="card"{% if c.tap %} data-tap="{{ c.tap }}"{% endif %}><div class="when">{{ c.when }}{% if c.aside %}<i>{{ c.aside }}</i>{% endif %}</div><div class="what">{{ c.what }}</div>{% if c.sub %}<div class="sub">{{ c.sub }}</div>{% endif %}</div>
   {% endfor %}
-  <div class="card"><div class="when">Mon<i>9:30</i></div><div class="what">Dentist</div><div class="sub">Market St</div></div>
-  <div class="card"><div class="when">Tue<i>all day</i></div><div class="what">Jobwright launch</div><div class="sub">3 tasks left</div></div>
 </div>
 {% endblock %}

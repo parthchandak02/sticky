@@ -50,6 +50,11 @@ class Settings:
     cleanup_model: str
     vocab: str
     host_labels: dict
+    lat: str
+    lon: str
+    calendar_ics: str
+    deck: tuple
+    approve_wait: int
 
     @property
     def notes_dir(self) -> Path:
@@ -62,6 +67,14 @@ class Settings:
     @property
     def firmware_dir(self) -> Path:
         return self.data_dir / "firmware"
+
+    @property
+    def fridge_dir(self) -> Path:
+        return self.data_dir / "fridge"
+
+    @property
+    def countdowns_file(self) -> Path:
+        return self.data_dir / "countdowns.json"
 
     @property
     def state_file(self) -> Path:
@@ -90,7 +103,12 @@ def load() -> Settings:
         host_labels=dict(
             kv.split("=", 1) for kv in _get("STICKY_HOST_LABELS", "").split(",") if "=" in kv
         ),
+        lat=_get("STICKY_LAT", ""),
+        lon=_get("STICKY_LON", ""),
+        calendar_ics=_get("STICKY_CALENDAR_ICS", ""),
+        deck=tuple(p.strip() for p in _get("STICKY_DECK", "board,today,countdown,photo,note").split(",") if p.strip()),
+        approve_wait=int(_get("STICKY_APPROVE_WAIT", "45")),
     )
-    for d in (s.data_dir, s.notes_dir, s.audio_dir, s.firmware_dir):
+    for d in (s.data_dir, s.notes_dir, s.audio_dir, s.firmware_dir, s.fridge_dir):
         d.mkdir(parents=True, exist_ok=True)
     return s
