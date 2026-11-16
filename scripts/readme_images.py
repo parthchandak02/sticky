@@ -11,7 +11,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from PIL import Image, ImageChops, ImageDraw, ImageFilter
+from PIL import Image, ImageDraw, ImageFilter
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "screens" / "out"

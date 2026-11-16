@@ -17,7 +17,7 @@ dependencies = [
 ]
 
 [dependency-groups]
-dev = ["pytest>=8.3", "httpx>=0.27"]
+dev = ["pytest>=8.3", "httpx>=0.27", "ruff>=0.14"]
 
 [project.scripts]
 sticky-server = "sticky_server.app:main"
@@ -32,3 +32,11 @@ packages = ["server/sticky_server"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["server"]
+
+[tool.ruff]
+extend-exclude = ["firmware/freeink-sdk", "firmware/.pio"]
+
+[tool.ruff.lint]
+# Pyflakes plus pycodestyle errors. Broader style rules are not the CI gate.
+# Firmware is not linted here; it is review-only and is not built in CI.
+select = ["E4", "E7", "E9", "F"]
