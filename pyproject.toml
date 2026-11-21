@@ -26,6 +26,10 @@ sticky-server = "sticky_server.app:main"
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
+[tool.uv]
+# Only resolve package versions published at least 7 days ago (supply-chain safety).
+exclude-newer = "7 days"
+
 [tool.hatch.build.targets.wheel]
 packages = ["server/sticky_server"]
 
