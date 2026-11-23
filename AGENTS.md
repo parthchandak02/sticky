@@ -10,6 +10,9 @@ uses it on one device.
 uv sync --locked --group dev
 ```
 A fresh worktree is ready to run pytest after this one command. `uv` must already be installed.
+New dependency versions must be at least 7 days old (`exclude-newer = "7 days"` in `pyproject.toml`).
+For a security fix that needs a newer release, give that one package a later cutoff with
+`exclude-newer-package = { <name> = "<date>" }` under `[tool.uv]`, then `uv lock`.
 Screen design also needs `uv run playwright install chromium`. Firmware work needs
 `git clone --recursive` (the FreeInk SDK is a submodule) and PlatformIO. CI installs neither.
 
